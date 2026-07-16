@@ -1,16 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Search, X, Grid3X3, List, 
-  ChevronDown, Check, Gamepad2, Tag, TrendingUp,
-  TrendingDown, Clock, Filter
-} from 'lucide-react';
 import { GAME_CATEGORIES } from '@/lib/shared/constants';
-import { useListingStore } from '@/lib/store/listingStore';
-import { SkeletonCard } from '@/components/ui/Skeleton';
-import ListingCard from '@/components/features/ListingCard';
-import SEO from '@/components/seo/SEO';
 import { formatPrice } from '@/lib/shared/utils';
 import type { Listing } from '@/lib/shared/types';
 

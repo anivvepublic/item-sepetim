@@ -1,5 +1,5 @@
 import { useEffect, lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { useAuthStore } from './lib/store/authStore';
 import Header from './components/layout/Header';
@@ -8,7 +8,6 @@ import ScrollToTop from './components/layout/ScrollToTop';
 import ToastContainer from './components/ui/Toast';
 import { PageLoader } from './components/ui/Skeleton';
 
-// Lazy loaded pages
 const Home = lazy(() => import('./pages/Home'));
 const Listings = lazy(() => import('./pages/Listings'));
 const Login = lazy(() => import('./pages/Login'));
@@ -29,12 +28,10 @@ function App() {
     checkUser();
   }, [checkUser]);
 
-  if (isLoading) {
-    return <PageLoader />;
-  }
+  if (isLoading) return <PageLoader />;
 
   if (user?.is_admin) {
-    window.location.href = import.meta.env.VITE_ADMIN_URL || 'http://localhost:3201';
+    window.location.href = (import.meta as any).env.VITE_ADMIN_URL || 'http://localhost:3201';
     return null;
   }
 
@@ -68,5 +65,4 @@ function App() {
     </HelmetProvider>
   );
 }
-
 export default App;

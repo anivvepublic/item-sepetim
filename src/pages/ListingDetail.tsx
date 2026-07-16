@@ -1,14 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Tag, User, Shield, MessageCircle, ShoppingCart, ChevronLeft, ChevronRight, Package, Clock } from 'lucide-react';
-import { useListingStore } from '@/lib/store/listingStore';
-import { useAuthStore } from '@/lib/store/authStore';
-import { SkeletonListingDetail } from '@/components/ui/Skeleton';
-import SEO, { getProductSchema } from '@/components/seo/SEO';
 import type { Listing } from '@/lib/shared/types';
 import { formatPrice, formatDate } from '@/lib/shared/utils';
-import ListingCard from '@/components/features/ListingCard';
 
 export default function ListingDetail() {
   const { id } = useParams<{ id: string }>();

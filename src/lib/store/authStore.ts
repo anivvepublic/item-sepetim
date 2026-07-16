@@ -1,3 +1,4 @@
+import type { User } from '@/lib/shared/types';
 import { create } from 'zustand';
 import { supabase } from '../supabase/client';
 import type { User } from '@shared/types';

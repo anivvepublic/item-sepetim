@@ -1,10 +1,3 @@
-import { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, Calendar, Shield, TrendingUp, Heart, Package } from 'lucide-react';
-import { useAuthStore } from '@/lib/store/authStore';
-import { useFavoriteStore } from '@/lib/store/favoriteStore';
-import { useTransactionStore } from '@/lib/store/transactionStore';
-import { SkeletonProfile } from '@/components/ui/Skeleton';
 import { formatDate, formatPrice } from '@/lib/shared/utils';
 
 export default function ProfileInfo() {

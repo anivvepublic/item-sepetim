@@ -1,3 +1,5 @@
+import type { Listing } from '@/lib/shared/types';
+import type { Listing } from '@/lib/shared/types';
 import { create } from 'zustand';
 import { supabase } from '../supabase/client';
 import type { Listing } from '@/lib/shared/types';
