@@ -5,7 +5,7 @@ import { useAuthStore } from '@/lib/store/authStore';
 import { useFavoriteStore } from '@/lib/store/favoriteStore';
 import { useTransactionStore } from '@/lib/store/transactionStore';
 import { SkeletonProfile } from '@/components/ui/Skeleton';
-import { formatDate, formatPrice } from '../../../shared/utils';
+import { formatDate, formatPrice } from '@/lib/shared/utils';
 
 export default function ProfileInfo() {
   const { user, isLoading: authLoading } = useAuthStore();

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '../supabase/client';
-import type { Listing } from '@shared/types';
+import type { Listing } from '@/lib/shared/types';
 
 export interface Transaction {
   id: string;

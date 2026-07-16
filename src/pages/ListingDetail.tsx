@@ -6,8 +6,8 @@ import { useListingStore } from '@/lib/store/listingStore';
 import { useAuthStore } from '@/lib/store/authStore';
 import { SkeletonListingDetail } from '@/components/ui/Skeleton';
 import SEO, { getProductSchema } from '@/components/seo/SEO';
-import type { Listing } from '../../shared/types';
-import { formatPrice, formatDate } from '../../shared/utils';
+import type { Listing } from '@/lib/shared/types';
+import { formatPrice, formatDate } from '@/lib/shared/utils';
 import ListingCard from '@/components/features/ListingCard';
 
 export default function ListingDetail() {

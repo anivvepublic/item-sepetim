@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Package, CheckCircle2, Clock, XCircle, ShoppingBag, Wallet, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTransactionStore } from '@/lib/store/transactionStore';
-import { formatPrice, formatDate } from '../../../shared/utils';
+import { formatPrice, formatDate } from '@/lib/shared/utils';
 
 const statusConfig = {
   completed: { 

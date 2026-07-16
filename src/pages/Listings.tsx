@@ -6,13 +6,13 @@ import {
   ChevronDown, Check, Gamepad2, Tag, TrendingUp,
   TrendingDown, Clock, Filter
 } from 'lucide-react';
-import { GAME_CATEGORIES } from '../../shared/constants';
+import { GAME_CATEGORIES } from '@/lib/shared/constants';
 import { useListingStore } from '@/lib/store/listingStore';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 import ListingCard from '@/components/features/ListingCard';
 import SEO from '@/components/seo/SEO';
-import { formatPrice } from '../../shared/utils';
-import type { Listing } from '../../shared/types';
+import { formatPrice } from '@/lib/shared/utils';
+import type { Listing } from '@/lib/shared/types';
 
 type SortOption = 'newest' | 'oldest' | 'price-asc' | 'price-desc';
 type ViewMode = 'grid' | 'list';
