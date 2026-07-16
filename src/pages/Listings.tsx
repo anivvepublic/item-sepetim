@@ -6,13 +6,13 @@ import {
   ChevronDown, Check, Gamepad2, Tag, TrendingUp,
   TrendingDown, Clock, Filter
 } from 'lucide-react';
-import { GAME_CATEGORIES } from '@shared/constants';
+import { GAME_CATEGORIES } from '../../shared/constants';
 import { useListingStore } from '@/lib/store/listingStore';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 import ListingCard from '@/components/features/ListingCard';
-import { formatPrice } from '@shared/utils';
 import SEO from '@/components/seo/SEO';
-import type { Listing } from '@shared/types';
+import { formatPrice } from '../../shared/utils';
+import type { Listing } from '../../shared/types';
 
 type SortOption = 'newest' | 'oldest' | 'price-asc' | 'price-desc';
 type ViewMode = 'grid' | 'list';
@@ -198,7 +198,7 @@ export default function Listings() {
                       Oyun
                     </h4>
                     <div className="space-y-2 max-h-48 overflow-y-auto">
-                      {GAME_CATEGORIES.map((game) => (
+                      {GAME_CATEGORIES.map((game: string) => (
                         <label
                           key={game}
                           className="flex items-center gap-3 cursor-pointer group"
@@ -486,7 +486,7 @@ export default function Listings() {
                   <div>
                     <h4 className="text-sm font-bold text-neutral-900 dark:text-neutral-100 mb-3">Oyun</h4>
                     <div className="space-y-2">
-                      {GAME_CATEGORIES.map((game) => (
+                      {GAME_CATEGORIES.map((game: string) => (
                         <label
                           key={game}
                           className="flex items-center gap-3 cursor-pointer"

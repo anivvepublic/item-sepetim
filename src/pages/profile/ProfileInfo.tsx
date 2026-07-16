@@ -5,7 +5,7 @@ import { useAuthStore } from '@/lib/store/authStore';
 import { useFavoriteStore } from '@/lib/store/favoriteStore';
 import { useTransactionStore } from '@/lib/store/transactionStore';
 import { SkeletonProfile } from '@/components/ui/Skeleton';
-import { formatDate, formatPrice } from '@shared/utils';
+import { formatDate, formatPrice } from '../../../shared/utils';
 
 export default function ProfileInfo() {
   const { user, isLoading: authLoading } = useAuthStore();
@@ -25,7 +25,6 @@ export default function ProfileInfo() {
 
   if (!user) return null;
 
-  const memberDays = Math.floor((new Date().getTime() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24));
   const completedCount = getCompletedCount();
   const totalSpent = getTotalSpent();
 
@@ -88,7 +87,6 @@ export default function ProfileInfo() {
         </p>
       </div>
 
-      {/* Profile Header Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -146,7 +144,6 @@ export default function ProfileInfo() {
         </div>
       </motion.div>
 
-      {/* Stats Cards */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

@@ -1,38 +1,31 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, Bell, Moon, Sun, AlertTriangle, Trash2, Save, Eye, EyeOff, Camera, X, Upload } from 'lucide-react';
+import { User, Lock, Bell, Moon, Sun, AlertTriangle, Trash2, Save, Eye, EyeOff, Camera, X, Upload } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
 import { useThemeStore } from '@/lib/store/themeStore';
 import { supabase } from '@/lib/supabase/client';
 import { showToast } from '@/components/ui/Toast';
 import { uploadAvatar } from '@/lib/utils/avatar';
-import Avatar from '@/components/ui/Avatar';
 
 export default function ProfileSettings() {
   const { user, checkUser } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  // Username değiştirme
   const [newUsername, setNewUsername] = useState(user?.username || '');
   const [isUpdatingUsername, setIsUpdatingUsername] = useState(false);
 
-  // Şifre değiştirme
-  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [showPasswords, setShowPasswords] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
-  // Avatar
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [previewAvatar, setPreviewAvatar] = useState<string | null>(user?.avatar_url || null);
 
-  // Bildirim tercihleri
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [marketingEmails, setMarketingEmails] = useState(false);
 
-  // Hesap silme
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -95,7 +88,6 @@ export default function ProfileSettings() {
       if (error) throw error;
 
       showToast('Şifre başarıyla değiştirildi', 'success');
-      setCurrentPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
     } catch (error: any) {
@@ -124,7 +116,6 @@ export default function ProfileSettings() {
       });
 
       if (newAvatarUrl) {
-        // Veritabanına kaydet
         const { error } = await supabase
           .from('users')
           .update({ avatar_url: newAvatarUrl })
@@ -141,7 +132,6 @@ export default function ProfileSettings() {
       showToast('Avatar güncellenirken bir hata oluştu', 'error');
     } finally {
       setIsUploadingAvatar(false);
-      // Input'u temizle (aynı dosyayı tekrar seçebilmek için)
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -154,7 +144,6 @@ export default function ProfileSettings() {
     setIsUploadingAvatar(true);
 
     try {
-      // Storage'dan sil
       if (user.avatar_url) {
         const urlObj = new URL(user.avatar_url);
         const pathParts = urlObj.pathname.split('/');
@@ -167,7 +156,6 @@ export default function ProfileSettings() {
         }
       }
 
-      // Veritabanından temizle
       const { error } = await supabase
         .from('users')
         .update({ avatar_url: null })
@@ -233,7 +221,6 @@ export default function ProfileSettings() {
         </p>
       </div>
 
-      {/* Avatar Bölümü */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -250,11 +237,17 @@ export default function ProfileSettings() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-          {/* Avatar Preview */}
           <div className="relative group">
-            <Avatar user={{ ...user, avatar_url: previewAvatar }} size="xl" />
+            <div className="w-24 h-24 bg-gradient-to-br from-primary-600 to-accent-500 rounded-full flex items-center justify-center shadow-float-lg overflow-hidden">
+              {previewAvatar ? (
+                <img src={previewAvatar} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-3xl font-bold text-white">
+                  {(user.username || user.email)[0].toUpperCase()}
+                </span>
+              )}
+            </div>
             
-            {/* Hover Overlay */}
             <button
               onClick={handleAvatarClick}
               disabled={isUploadingAvatar}
@@ -268,7 +261,6 @@ export default function ProfileSettings() {
             </button>
           </div>
 
-          {/* Actions */}
           <div className="flex-1 space-y-3">
             <div>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
@@ -306,7 +298,6 @@ export default function ProfileSettings() {
         </div>
       </motion.div>
 
-      {/* Username Değiştirme */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -357,7 +348,6 @@ export default function ProfileSettings() {
         </form>
       </motion.div>
 
-      {/* Şifre Değiştirme */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -432,7 +422,6 @@ export default function ProfileSettings() {
         </form>
       </motion.div>
 
-      {/* Tema Tercihi */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -471,7 +460,6 @@ export default function ProfileSettings() {
         </div>
       </motion.div>
 
-      {/* Bildirim Tercihleri */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -529,7 +517,6 @@ export default function ProfileSettings() {
         </div>
       </motion.div>
 
-      {/* Tehlikeli Bölge - Hesap Silme */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -561,7 +548,6 @@ export default function ProfileSettings() {
         </button>
       </motion.div>
 
-      {/* Hesap Silme Modal */}
       {showDeleteModal && (
         <motion.div
           initial={{ opacity: 0 }}

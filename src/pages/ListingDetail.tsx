@@ -5,9 +5,9 @@ import { ArrowLeft, Calendar, Tag, User, Shield, MessageCircle, ShoppingCart, Ch
 import { useListingStore } from '@/lib/store/listingStore';
 import { useAuthStore } from '@/lib/store/authStore';
 import { SkeletonListingDetail } from '@/components/ui/Skeleton';
-import { formatPrice, formatDate } from '@shared/utils';
 import SEO, { getProductSchema } from '@/components/seo/SEO';
-import type { Listing } from '@shared/types';
+import type { Listing } from '../../shared/types';
+import { formatPrice, formatDate } from '../../shared/utils';
 import ListingCard from '@/components/features/ListingCard';
 
 export default function ListingDetail() {
@@ -179,7 +179,7 @@ export default function ListingDetail() {
                 {images.length > 1 && (
                   <div className="p-4 border-t border-neutral-100 dark:border-neutral-800">
                     <div className="flex gap-2 overflow-x-auto">
-                      {images.map((image, index) => (
+                      {images.map((image: string, index: number) => (
                         <button
                           key={index}
                           onClick={() => setCurrentImageIndex(index)}

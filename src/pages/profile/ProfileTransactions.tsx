@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Package, CheckCircle2, Clock, XCircle, TrendingUp, ShoppingBag, Wallet, ExternalLink } from 'lucide-react';
+import { Package, CheckCircle2, Clock, XCircle, ShoppingBag, Wallet, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTransactionStore } from '@/lib/store/transactionStore';
-import { formatPrice, formatDate } from '@shared/utils';
+import { formatPrice, formatDate } from '../../../shared/utils';
 
 const statusConfig = {
   completed: { 
@@ -61,7 +61,6 @@ export default function ProfileTransactions() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-3">
           <Package className="w-8 h-8 text-primary-600" />
@@ -72,7 +71,6 @@ export default function ProfileTransactions() {
         </p>
       </div>
 
-      {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -125,7 +123,6 @@ export default function ProfileTransactions() {
         </motion.div>
       </div>
 
-      {/* Transaction List */}
       {transactions.length === 0 ? (
         <div className="card p-12 text-center">
           <ShoppingBag className="w-16 h-16 text-neutral-300 dark:text-neutral-700 mx-auto mb-4" />
@@ -155,7 +152,6 @@ export default function ProfileTransactions() {
                   transition={{ delay: index * 0.1 }}
                   className={`relative flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border ${config.border} ${config.bg} transition-all hover:shadow-md`}
                 >
-                  {/* Left: Info */}
                   <div className="flex items-start gap-4 mb-4 md:mb-0">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-white dark:bg-neutral-900 shadow-sm`}>
                       <StatusIcon className={`w-6 h-6 ${config.color}`} />
@@ -174,7 +170,6 @@ export default function ProfileTransactions() {
                     </div>
                   </div>
 
-                  {/* Right: Price & Status */}
                   <div className="flex items-center justify-between md:justify-end gap-6 pl-16 md:pl-0">
                     <div className="text-right">
                       <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">Tutar</p>
