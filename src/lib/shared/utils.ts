@@ -1,4 +1,4 @@
-import type { User } from '../types';
+import type { User } from '@/lib/shared/types';
 
 // Format price
 export const formatPrice = (price: number): string => {

@@ -1,5 +1,28 @@
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import {
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  Package,
+  Tag,
+  Calendar,
+  Clock,
+  User,
+  ShoppingCart,
+  MessageCircle,
+  Shield,
+} from 'lucide-react';
 import type { Listing } from '@/lib/shared/types';
 import { formatPrice, formatDate } from '@/lib/shared/utils';
+import { useListingStore } from '@/lib/store/listingStore';
+import { useAuthStore } from '@/lib/store/authStore';
+import SEO from '@/components/SEO';
+import SkeletonListingDetail from '@/components/skeletons/SkeletonListingDetail';
+import ListingCard from '@/components/ListingCard';
+import { getProductSchema } from '@/lib/shared/seo';
 
 export default function ListingDetail() {
   const { id } = useParams<{ id: string }>();
@@ -14,7 +37,7 @@ export default function ListingDetail() {
   useEffect(() => {
     const loadListing = async () => {
       if (!id) return;
-      
+
       setIsLoading(true);
       const data = await fetchListingById(id);
       setListing(data);
@@ -30,7 +53,7 @@ export default function ListingDetail() {
 
   useEffect(() => {
     if (listing) {
-      const similar = listings.filter(l => l.id !== listing.id).slice(0, 3);
+      const similar = listings.filter((l: Listing) => l.id !== listing.id).slice(0, 3);
       setSimilarListings(similar);
     }
   }, [listings, listing]);
@@ -96,16 +119,16 @@ export default function ListingDetail() {
     );
   }
 
-  const images = listing.images && listing.images.length > 0 
-    ? listing.images 
+  const images = listing.images && listing.images.length > 0
+    ? listing.images
     : ['https://via.placeholder.com/800x600?text=No+Image'];
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    setCurrentImageIndex((prev: number) => (prev + 1) % images.length);
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    setCurrentImageIndex((prev: number) => (prev - 1 + images.length) % images.length);
   };
 
   return (
@@ -319,7 +342,7 @@ export default function ListingDetail() {
             >
               <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-6">Benzer İlanlar</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {similarListings.map((item) => (
+                {similarListings.map((item: Listing) => (
                   <ListingCard key={item.id} listing={item} />
                 ))}
               </div>

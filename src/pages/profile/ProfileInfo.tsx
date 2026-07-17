@@ -1,4 +1,11 @@
+import { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Mail, Calendar, Shield, Heart, Package, TrendingUp } from 'lucide-react';
 import { formatDate, formatPrice } from '@/lib/shared/utils';
+import { useAuthStore } from '@/lib/store/authStore';
+import { useFavoriteStore } from '@/lib/store/favoriteStore';
+import { useTransactionStore } from '@/lib/store/transactionStore';
+import SkeletonProfile from '@/components/skeletons/SkeletonProfile';
 
 export default function ProfileInfo() {
   const { user, isLoading: authLoading } = useAuthStore();
@@ -86,7 +93,7 @@ export default function ProfileInfo() {
         className="card p-6 lg:p-8 overflow-hidden relative"
       >
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary-500/10 to-accent-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-        
+
         <div className="relative flex items-start gap-6 mb-8">
           <div className="w-24 h-24 bg-gradient-to-br from-primary-600 to-accent-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-float-lg">
             {user.avatar_url ? (

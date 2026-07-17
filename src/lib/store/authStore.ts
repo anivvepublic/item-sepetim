@@ -1,7 +1,6 @@
 import type { User } from '@/lib/shared/types';
 import { create } from 'zustand';
 import { supabase } from '../supabase/client';
-import type { User } from '@shared/types';
 
 interface AuthState {
   user: User | null;
@@ -44,7 +43,6 @@ export const useAuthStore = create<AuthState>((set) => ({
         throw userError;
       }
 
-      // Eğer users tablosunda kayıt yoksa oluştur
       if (!userData) {
         console.log('[DEBUG] User not found in users table, creating...');
         const { data: newUser, error: insertError } = await supabase
@@ -84,8 +82,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   register: async (email: string, password: string, username: string) => {
     console.log('[DEBUG] Register started');
-    
-    // Username kontrolü
+
     const { data: usernameExists } = await supabase
       .rpc('check_username_available', { check_username: username });
 
@@ -163,7 +160,6 @@ export const useAuthStore = create<AuthState>((set) => ({
           return;
         }
 
-        // Eğer users tablosunda kayıt yoksa oluştur
         if (!userData) {
           console.log('[DEBUG] User not found in users table, creating...');
           const { data: newUser, error: insertError } = await supabase

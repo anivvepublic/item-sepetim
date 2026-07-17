@@ -1,8 +1,6 @@
 import type { Listing } from '@/lib/shared/types';
-import type { Listing } from '@/lib/shared/types';
 import { create } from 'zustand';
 import { supabase } from '../supabase/client';
-import type { Listing } from '@/lib/shared/types';
 
 interface ListingState {
   listings: Listing[];
@@ -32,7 +30,6 @@ export const useListingStore = create<ListingState>((set) => ({
         .select('*')
         .order('created_at', { ascending: false });
 
-      // Apply filters
       if (filters.game) {
         query = query.eq('game', filters.game);
       }
@@ -44,7 +41,6 @@ export const useListingStore = create<ListingState>((set) => ({
       if (filters.status) {
         query = query.eq('status', filters.status);
       } else {
-        // Default: only active listings
         query = query.eq('status', 'active');
       }
 

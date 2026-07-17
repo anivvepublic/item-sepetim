@@ -1,6 +1,27 @@
+import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Clock,
+  TrendingUp,
+  TrendingDown,
+  Filter,
+  Check,
+  ChevronDown,
+  Grid3X3,
+  List,
+  Gamepad2,
+  Tag,
+  X,
+  Search,
+} from 'lucide-react';
 import { GAME_CATEGORIES } from '@/lib/shared/constants';
 import { formatPrice } from '@/lib/shared/utils';
 import type { Listing } from '@/lib/shared/types';
+import { useListingStore } from '@/lib/store/listingStore';
+import SEO from '@/components/SEO';
+import ListingCard from '@/components/ListingCard';
+import SkeletonCard from '@/components/skeletons/SkeletonCard';
 
 type SortOption = 'newest' | 'oldest' | 'price-asc' | 'price-desc';
 type ViewMode = 'grid' | 'list';
@@ -8,7 +29,7 @@ type ViewMode = 'grid' | 'list';
 export default function Listings() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { listings, isLoading, fetchListings } = useListingStore();
-  
+
   const [selectedGames, setSelectedGames] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [minPrice, setMinPrice] = useState<string>('');
@@ -21,7 +42,7 @@ export default function Listings() {
   useEffect(() => {
     const game = searchParams.get('game');
     const category = searchParams.get('category');
-    
+
     if (game) setSelectedGames([game]);
     if (category) setSelectedCategory(category);
   }, [searchParams]);
@@ -34,18 +55,18 @@ export default function Listings() {
     let result = [...listings];
 
     if (selectedGames.length > 0) {
-      result = result.filter(l => selectedGames.includes(l.game));
+      result = result.filter((l: Listing) => selectedGames.includes(l.game));
     }
 
     if (selectedCategory) {
-      result = result.filter(l => l.category === selectedCategory);
+      result = result.filter((l: Listing) => l.category === selectedCategory);
     }
 
     if (minPrice) {
-      result = result.filter(l => l.price >= parseFloat(minPrice));
+      result = result.filter((l: Listing) => l.price >= parseFloat(minPrice));
     }
     if (maxPrice) {
-      result = result.filter(l => l.price <= parseFloat(maxPrice));
+      result = result.filter((l: Listing) => l.price <= parseFloat(maxPrice));
     }
 
     switch (sortBy) {
@@ -75,7 +96,7 @@ export default function Listings() {
 
   const toggleGame = (game: string) => {
     const newGames = selectedGames.includes(game)
-      ? selectedGames.filter(g => g !== game)
+      ? selectedGames.filter((g: string) => g !== game)
       : [...selectedGames, game];
     setSelectedGames(newGames);
     updateURL(newGames, selectedCategory);
@@ -423,13 +444,14 @@ export default function Listings() {
               {!isLoading && filteredListings.length > 0 && (
                 <motion.div
                   layout
-                  className={viewMode === 'grid' 
-                    ? 'grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6'
-                    : 'space-y-4'
+                  className={
+                    viewMode === 'grid'
+                      ? 'grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6'
+                      : 'space-y-4'
                   }
                 >
                   <AnimatePresence>
-                    {filteredListings.map((listing) => (
+                    {filteredListings.map((listing: Listing) => (
                       viewMode === 'grid' ? (
                         <ListingCard key={listing.id} listing={listing} />
                       ) : (

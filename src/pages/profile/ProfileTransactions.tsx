@@ -1,24 +1,49 @@
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import {
+  CheckCircle2,
+  Clock,
+  XCircle,
+  Package,
+  Wallet,
+  ShoppingBag,
+  ExternalLink,
+} from 'lucide-react';
 import { formatPrice, formatDate } from '@/lib/shared/utils';
+import { useTransactionStore } from '@/lib/store/transactionStore';
+
+interface Transaction {
+  id: string;
+  status: string;
+  created_at: string;
+  listings?: {
+    id: string;
+    title: string;
+    game: string;
+    price: number;
+  } | null;
+}
 
 const statusConfig = {
-  completed: { 
-    icon: CheckCircle2, 
-    label: 'Tamamlandı', 
-    color: 'text-success-600 dark:text-success-400', 
+  completed: {
+    icon: CheckCircle2,
+    label: 'Tamamlandı',
+    color: 'text-success-600 dark:text-success-400',
     bg: 'bg-success-50 dark:bg-success-900/20',
     border: 'border-success-200 dark:border-success-800'
   },
-  pending: { 
-    icon: Clock, 
-    label: 'İşlemde', 
-    color: 'text-accent-600 dark:text-accent-400', 
+  pending: {
+    icon: Clock,
+    label: 'İşlemde',
+    color: 'text-accent-600 dark:text-accent-400',
     bg: 'bg-accent-50 dark:bg-accent-900/20',
     border: 'border-accent-200 dark:border-accent-800'
   },
-  cancelled: { 
-    icon: XCircle, 
-    label: 'İptal Edildi', 
-    color: 'text-red-600 dark:text-red-400', 
+  cancelled: {
+    icon: XCircle,
+    label: 'İptal Edildi',
+    color: 'text-red-600 dark:text-red-400',
     bg: 'bg-red-50 dark:bg-red-900/20',
     border: 'border-red-200 dark:border-red-800'
   }
@@ -67,7 +92,7 @@ export default function ProfileTransactions() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="card p-6 flex items-center gap-4"
@@ -83,7 +108,7 @@ export default function ProfileTransactions() {
           </div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -100,7 +125,7 @@ export default function ProfileTransactions() {
           </div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -112,7 +137,7 @@ export default function ProfileTransactions() {
           <div>
             <p className="text-sm text-neutral-500 dark:text-neutral-400">Bekleyen</p>
             <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-              {transactions.filter(t => t.status === 'pending').length}
+              {transactions.filter((t: Transaction) => t.status === 'pending').length}
             </p>
           </div>
         </motion.div>
@@ -134,7 +159,7 @@ export default function ProfileTransactions() {
       ) : (
         <div className="card p-6 lg:p-8">
           <div className="space-y-6">
-            {transactions.map((trx, index) => {
+            {transactions.map((trx: Transaction, index: number) => {
               const config = statusConfig[trx.status as keyof typeof statusConfig];
               const StatusIcon = config.icon;
               const listing = trx.listings;
@@ -148,7 +173,7 @@ export default function ProfileTransactions() {
                   className={`relative flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border ${config.border} ${config.bg} transition-all hover:shadow-md`}
                 >
                   <div className="flex items-start gap-4 mb-4 md:mb-0">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-white dark:bg-neutral-900 shadow-sm`}>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-white dark:bg-neutral-900 shadow-sm">
                       <StatusIcon className={`w-6 h-6 ${config.color}`} />
                     </div>
                     <div>

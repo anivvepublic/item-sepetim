@@ -45,7 +45,7 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
       if (error) throw error;
 
       const notifications = data || [];
-      const unread = notifications.filter((n: any) => !n.is_read).length;
+      const unreadCount = notifications.filter((n: Notification) => !n.is_read).length;
 
       set({
         notifications,
