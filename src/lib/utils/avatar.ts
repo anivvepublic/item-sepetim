@@ -61,12 +61,16 @@ export async function uploadAvatar({ file, userId, currentAvatarUrl }: UploadAva
       return null;
     }
 
-    // 6. Public URL al
+    // 6. Public URL al (cache busting için timestamp ekle)
     const { data: { publicUrl } } = supabase.storage
       .from('avatars')
       .getPublicUrl(filePath);
 
-    return publicUrl;
+    // Cache busting: URL'e timestamp ekle
+    const timestamp = new Date().getTime();
+    const urlWithCacheBust = `${publicUrl}?t=${timestamp}`;
+
+    return urlWithCacheBust;
   } catch (error) {
     console.error('Avatar upload error:', error);
     showToast('Beklenmeyen bir hata oluştu', 'error');
@@ -148,21 +152,4 @@ function extractPathFromUrl(url: string): string | null {
   } catch {
     return null;
   }
-}
-
-/**
- * Kullanıcı adı veya email'den avatar URL'i oluşturur (placeholder)
- */
-export function getAvatarPlaceholder(name: string): string {
-  const colors = [
-    'from-primary-500 to-primary-700',
-    'from-accent-500 to-accent-700',
-    'from-success-500 to-success-700',
-    'from-blue-500 to-blue-700',
-    'from-purple-500 to-purple-700',
-    'from-pink-500 to-pink-700',
-  ];
-  
-  const index = name.charCodeAt(0) % colors.length;
-  return colors[index];
 }

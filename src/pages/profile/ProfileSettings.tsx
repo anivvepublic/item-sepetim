@@ -106,6 +106,12 @@ export default function ProfileSettings() {
     const file = e.target.files?.[0];
     if (!file || !user) return;
 
+    // Anında boyut kontrolü
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Dosya boyutu 5MB\'dan büyük olamaz', 'error');
+      return;
+    }
+
     setIsUploadingAvatar(true);
 
     try {
@@ -116,6 +122,7 @@ export default function ProfileSettings() {
       });
 
       if (newAvatarUrl) {
+        // Veritabanına kaydet
         const { error } = await supabase
           .from('users')
           .update({ avatar_url: newAvatarUrl })
@@ -123,7 +130,9 @@ export default function ProfileSettings() {
 
         if (error) throw error;
 
+        // Auth store'u güncelle (cache busting için)
         await checkUser();
+        
         setPreviewAvatar(newAvatarUrl);
         showToast('Profil fotoğrafı başarıyla güncellendi', 'success');
       }
@@ -132,6 +141,7 @@ export default function ProfileSettings() {
       showToast('Avatar güncellenirken bir hata oluştu', 'error');
     } finally {
       setIsUploadingAvatar(false);
+      // Input'u temizle (aynı dosyayı tekrar seçebilmek için)
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
