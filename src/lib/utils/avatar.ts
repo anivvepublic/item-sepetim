@@ -54,7 +54,7 @@ export async function uploadAvatar({ file, userId, currentAvatarUrl }: UploadAva
       .upload(filePath, compressedBlob, {
         contentType: 'image/webp',
         cacheControl: '0', // Cache'i kapat
-        upsert: false,
+        upsert: true, // Aynı dosya varsa üzerine yaz
       });
 
     if (uploadError) {
