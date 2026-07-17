@@ -103,53 +103,54 @@ export default function ProfileSettings() {
   };
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) {
-      console.error('Dosya veya kullanıcı yok');
-      return;
+  const file = e.target.files?.[0];
+  if (!file || !user) {
+    console.error('Dosya veya kullanıcı yok');
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('Dosya boyutu 5MB\'dan büyük olamaz', 'error');
+    return;
+  }
+
+  setIsUploadingAvatar(true);
+
+  try {
+    console.log('Avatar yükleniyor...');
+    const newAvatarUrl = await uploadAvatar({
+      file,
+      userId: user.id,
+      currentAvatarUrl: user.avatar_url,
+    });
+
+    if (newAvatarUrl) {
+      console.log('Yeni avatar URL:', newAvatarUrl);
+      
+      // Preview'i güncelle
+      setPreviewAvatar(newAvatarUrl);
+      
+      // Auth store'u yenile (en önemli kısım!)
+      await new Promise(resolve => setTimeout(resolve, 500));
+      await checkUser();
+      
+      // Sayfayı yenile (cache'i temizlemek için)
+      window.location.reload();
+      
+      showToast('Profil fotoğrafı başarıyla güncellendi', 'success');
+    } else {
+      showToast('Avatar yüklenemedi', 'error');
     }
-
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Dosya boyutu 5MB\'dan büyük olamaz', 'error');
-      return;
+  } catch (error: any) {
+    console.error('Avatar update error:', error);
+    showToast('Avatar güncellenirken hata: ' + error.message, 'error');
+  } finally {
+    setIsUploadingAvatar(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
-
-    setIsUploadingAvatar(true);
-
-    try {
-      const newAvatarUrl = await uploadAvatar({
-        file,
-        userId: user.id,
-        currentAvatarUrl: user.avatar_url,
-      });
-
-      if (newAvatarUrl) {
-        const { error } = await supabase
-          .from('users')
-          .update({ avatar_url: newAvatarUrl })
-          .eq('id', user.id);
-
-        if (error) {
-          console.error('Database update hatası:', error);
-          throw error;
-        }
-
-        await checkUser();
-        setPreviewAvatar(newAvatarUrl);
-        showToast('Profil fotoğrafı başarıyla güncellendi', 'success');
-      } else {
-        showToast('Avatar yüklenemedi', 'error');
-      }
-    } catch (error: any) {
-      console.error('Avatar update error:', error);
-      showToast('Avatar güncellenirken bir hata oluştu: ' + error.message, 'error');
-    } finally {
-      setIsUploadingAvatar(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    }
-  };
+  }
+};
 
   const handleRemoveAvatar = async () => {
     if (!user) return;

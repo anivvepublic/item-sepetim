@@ -24,15 +24,19 @@ export default function Avatar({ user, size = 'md', className = '' }: AvatarProp
   }
 
   if (user.avatar_url) {
-    const avatarUrl = user.avatar_url.includes('?t=') 
-      ? user.avatar_url 
-      : `${user.avatar_url}?t=${new Date().getTime()}`;
+    // Agresif cache busting: Her render'da yeni timestamp
+    const timestamp = new Date().getTime();
+    const avatarUrl = `${user.avatar_url.split('?')[0]}?t=${timestamp}`;
 
     return (
       <img
         src={avatarUrl}
         alt={user.username || user.email}
         className={`${sizeClasses[size]} rounded-full object-cover ${className}`}
+        onError={(e) => {
+          // Resim yüklenemezse placeholder göster
+          (e.target as HTMLImageElement).style.display = 'none';
+        }}
       />
     );
   }

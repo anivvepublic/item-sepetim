@@ -21,55 +21,98 @@ export async function uploadAvatar({ file, userId, currentAvatarUrl }: UploadAva
       return null;
     }
 
-    // 2. Resmi sıkıştır ve WebP'ye çevir
+    // 2. Resmi sıkıştır
     const compressedBlob = await compressImage(file, 400, 200);
     
-    // 3. Dosya yolu: avatars/{user_id}/avatar.webp
+    // 3. Dosya yolu
     const fileName = `avatar.webp`;
     const filePath = `${userId}/${fileName}`;
 
-    // 4. Eski avatarı sil (varsa)
+    console.log('Avatar yükleme başlıyor:', filePath);
+
+    // 4. Eski avatarı SUPABASE STORAGE'dan sil
     if (currentAvatarUrl) {
       const oldPath = extractPathFromUrl(currentAvatarUrl);
       if (oldPath) {
+        console.log('Eski avatar siliniyor:', oldPath);
         const { error: removeError } = await supabase.storage
           .from('avatars')
           .remove([oldPath]);
         
         if (removeError) {
           console.error('Eski avatar silinirken hata:', removeError);
+        } else {
+          console.log('Eski avatar silindi');
         }
       }
     }
 
-    // 5. Yeni avatarı yükle
+    // 5. Yeni avatarı yükle (upsert: false çünkü sildik)
+    console.log('Yeni avatar yükleniyor...');
     const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(filePath, compressedBlob, {
         contentType: 'image/webp',
-        cacheControl: '3600',
+        cacheControl: '0', // Cache'i kapat
         upsert: false,
       });
 
     if (uploadError) {
-      console.error('Avatar upload hatası:', uploadError);
-      showToast('Avatar yüklenirken bir hata oluştu: ' + uploadError.message, 'error');
+      console.error('Upload hatası:', uploadError);
+      showToast('Avatar yüklenirken hata: ' + uploadError.message, 'error');
       return null;
     }
+
+    console.log('Upload başarılı');
 
     // 6. Public URL al
     const { data: { publicUrl } } = supabase.storage
       .from('avatars')
       .getPublicUrl(filePath);
 
-    // Cache busting: URL'e timestamp ekle
+    console.log('Public URL:', publicUrl);
+
+    // 7. Cache busting timestamp
     const timestamp = new Date().getTime();
-    const urlWithCacheBust = `${publicUrl}?t=${timestamp}`;
+    const urlWithCacheBust = `${publicUrl}?t=${timestamp}&v=${Math.random()}`;
+
+    // 8. users tablosunu güncelle
+    console.log('Users tablosu güncelleniyor...');
+    const { error: dbError } = await supabase
+      .from('users')
+      .update({ 
+        avatar_url: urlWithCacheBust,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', userId);
+
+    if (dbError) {
+      console.error('Database update hatası:', dbError);
+      showToast('Veritabanı güncellenemedi: ' + dbError.message, 'error');
+      return null;
+    }
+
+    console.log('Database güncellendi');
+
+    // 9. Supabase Auth metadata'yı güncelle
+    console.log('Auth metadata güncelleniyor...');
+    const { error: authError } = await supabase.auth.updateUser({
+      data: { 
+        avatar_url: urlWithCacheBust,
+        updated_at: new Date().toISOString()
+      }
+    });
+
+    if (authError) {
+      console.error('Auth update hatası:', authError);
+    } else {
+      console.log('Auth metadata güncellendi');
+    }
 
     return urlWithCacheBust;
   } catch (error: any) {
-    console.error('Avatar upload beklenmeyen hata:', error);
-    showToast('Beklenmeyen bir hata oluştu: ' + error.message, 'error');
+    console.error('Beklenmeyen hata:', error);
+    showToast('Beklenmeyen hata: ' + error.message, 'error');
     return null;
   }
 }
@@ -85,7 +128,6 @@ async function compressImage(file: File, maxSize: number, maxFileSizeKB: number)
 
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      
       const size = Math.min(img.width, img.height, maxSize);
       canvas.width = size;
       canvas.height = size;
