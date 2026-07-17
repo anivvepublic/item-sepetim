@@ -81,8 +81,7 @@ export async function uploadAvatar({ file, userId, currentAvatarUrl }: UploadAva
     const { error: dbError } = await supabase
       .from('users')
       .update({ 
-        avatar_url: urlWithCacheBust,
-        updated_at: new Date().toISOString()
+        avatar_url: urlWithCacheBust
       })
       .eq('id', userId);
 
