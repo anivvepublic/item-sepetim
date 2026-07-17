@@ -28,7 +28,7 @@ export async function uploadAvatar({ file, userId, currentAvatarUrl }: UploadAva
     const fileName = `avatar.webp`;
     const filePath = `${userId}/${fileName}`;
 
-    // 4. Eski avatarı sil (varsa) - upsert yerine önce sil
+    // 4. Eski avatarı sil (varsa)
     if (currentAvatarUrl) {
       const oldPath = extractPathFromUrl(currentAvatarUrl);
       if (oldPath) {
@@ -42,8 +42,8 @@ export async function uploadAvatar({ file, userId, currentAvatarUrl }: UploadAva
       }
     }
 
-    // 5. Yeni avatarı yükle (upsert: false, çünkü zaten sildik)
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    // 5. Yeni avatarı yükle
+    const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(filePath, compressedBlob, {
         contentType: 'image/webp',
