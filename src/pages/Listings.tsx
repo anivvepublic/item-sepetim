@@ -19,9 +19,9 @@ import { GAME_CATEGORIES } from '@/lib/shared/constants';
 import { formatPrice } from '@/lib/shared/utils';
 import type { Listing } from '@/lib/shared/types';
 import { useListingStore } from '@/lib/store/listingStore';
-import SEO from '@/components/SEO';
-import ListingCard from '@/components/ListingCard';
-import SkeletonCard from '@/components/skeletons/SkeletonCard';
+import SEO from '@/components/seo/SEO';
+import ListingCard from '@/components/features/ListingCard';
+import { SkeletonCard } from '@/components/ui/Skeleton';
 
 type SortOption = 'newest' | 'oldest' | 'price-asc' | 'price-desc';
 type ViewMode = 'grid' | 'list';

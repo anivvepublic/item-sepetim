@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft,
   ChevronLeft,
@@ -19,10 +18,9 @@ import type { Listing } from '@/lib/shared/types';
 import { formatPrice, formatDate } from '@/lib/shared/utils';
 import { useListingStore } from '@/lib/store/listingStore';
 import { useAuthStore } from '@/lib/store/authStore';
-import SEO from '@/components/SEO';
-import SkeletonListingDetail from '@/components/skeletons/SkeletonListingDetail';
-import ListingCard from '@/components/ListingCard';
-import { getProductSchema } from '@/lib/shared/seo';
+import SEO from '@/components/seo/SEO';
+import { SkeletonListingDetail } from '@/components/ui/Skeleton';
+import ListingCard from '@/components/features/ListingCard';
 
 export default function ListingDetail() {
   const { id } = useParams<{ id: string }>();
@@ -139,7 +137,6 @@ export default function ListingDetail() {
         image={listing.images?.[0]}
         url={`/listings/${listing.id}`}
         type="product"
-        schema={getProductSchema(listing)}
       />
 
       <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 py-8">
