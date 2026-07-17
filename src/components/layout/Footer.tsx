@@ -76,6 +76,9 @@ export default function Footer() {
             <Link to="/terms" className="text-neutral-500 hover:text-primary-400 transition-colors">Çerezler</Link>
           </div>
         </div>
+        <div className="mt-4 pt-4 border-t border-neutral-800/50 flex justify-center">
+          <span className="text-neutral-600 text-xs font-mono tracking-widest">v0.0.3</span>
+        </div>
       </div>
     </footer>
   );
