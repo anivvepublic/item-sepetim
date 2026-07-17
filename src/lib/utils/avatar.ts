@@ -7,13 +7,6 @@ interface UploadAvatarOptions {
   currentAvatarUrl?: string | null;
 }
 
-/**
- * Avatar yükleme helper'ı
- * - Resmi client-side'da sıkıştırır (max 400x400, 200KB)
- * - WebP formatına çevirir
- * - Supabase Storage'a yükler
- * - Eski avatarı siler
- */
 export async function uploadAvatar({ file, userId, currentAvatarUrl }: UploadAvatarOptions): Promise<string | null> {
   try {
     // 1. Dosya validasyonu
@@ -32,36 +25,39 @@ export async function uploadAvatar({ file, userId, currentAvatarUrl }: UploadAva
     const compressedBlob = await compressImage(file, 400, 200);
     
     // 3. Dosya yolu: avatars/{user_id}/avatar.webp
-    const fileExt = 'webp';
-    const fileName = `avatar.${fileExt}`;
+    const fileName = `avatar.webp`;
     const filePath = `${userId}/${fileName}`;
 
-    // 4. Eski avatarı sil (varsa)
+    // 4. Eski avatarı sil (varsa) - upsert yerine önce sil
     if (currentAvatarUrl) {
       const oldPath = extractPathFromUrl(currentAvatarUrl);
       if (oldPath) {
-        await supabase.storage
+        const { error: removeError } = await supabase.storage
           .from('avatars')
           .remove([oldPath]);
+        
+        if (removeError) {
+          console.error('Eski avatar silinirken hata:', removeError);
+        }
       }
     }
 
-    // 5. Yeni avatarı yükle
-    const { error: uploadError } = await supabase.storage
+    // 5. Yeni avatarı yükle (upsert: false, çünkü zaten sildik)
+    const { data: uploadData, error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(filePath, compressedBlob, {
         contentType: 'image/webp',
         cacheControl: '3600',
-        upsert: true, // Aynı dosya varsa üzerine yaz
+        upsert: false,
       });
 
     if (uploadError) {
-      console.error('Avatar upload error:', uploadError);
-      showToast('Avatar yüklenirken bir hata oluştu', 'error');
+      console.error('Avatar upload hatası:', uploadError);
+      showToast('Avatar yüklenirken bir hata oluştu: ' + uploadError.message, 'error');
       return null;
     }
 
-    // 6. Public URL al (cache busting için timestamp ekle)
+    // 6. Public URL al
     const { data: { publicUrl } } = supabase.storage
       .from('avatars')
       .getPublicUrl(filePath);
@@ -71,16 +67,13 @@ export async function uploadAvatar({ file, userId, currentAvatarUrl }: UploadAva
     const urlWithCacheBust = `${publicUrl}?t=${timestamp}`;
 
     return urlWithCacheBust;
-  } catch (error) {
-    console.error('Avatar upload error:', error);
-    showToast('Beklenmeyen bir hata oluştu', 'error');
+  } catch (error: any) {
+    console.error('Avatar upload beklenmeyen hata:', error);
+    showToast('Beklenmeyen bir hata oluştu: ' + error.message, 'error');
     return null;
   }
 }
 
-/**
- * Resmi sıkıştırır ve WebP'ye çevirir
- */
 async function compressImage(file: File, maxSize: number, maxFileSizeKB: number): Promise<Blob> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -93,7 +86,6 @@ async function compressImage(file: File, maxSize: number, maxFileSizeKB: number)
     img.onload = () => {
       const canvas = document.createElement('canvas');
       
-      // Boyut hesapla (kare yap)
       const size = Math.min(img.width, img.height, maxSize);
       canvas.width = size;
       canvas.height = size;
@@ -104,12 +96,10 @@ async function compressImage(file: File, maxSize: number, maxFileSizeKB: number)
         return;
       }
 
-      // Resmi ortala ve kırp (cover)
       const offsetX = (img.width - size) / 2;
       const offsetY = (img.height - size) / 2;
       ctx.drawImage(img, offsetX, offsetY, size, size, 0, 0, size, size);
 
-      // WebP olarak export et, kaliteyi düşürerek dene
       let quality = 0.85;
       const tryCompress = () => {
         canvas.toBlob(
@@ -138,14 +128,10 @@ async function compressImage(file: File, maxSize: number, maxFileSizeKB: number)
   });
 }
 
-/**
- * Supabase public URL'den dosya yolunu çıkarır
- */
 function extractPathFromUrl(url: string): string | null {
   try {
     const urlObj = new URL(url);
     const pathParts = urlObj.pathname.split('/');
-    // /storage/v1/object/public/avatars/{user_id}/avatar.webp
     const avatarIndex = pathParts.indexOf('avatars');
     if (avatarIndex === -1) return null;
     return pathParts.slice(avatarIndex + 1).join('/');

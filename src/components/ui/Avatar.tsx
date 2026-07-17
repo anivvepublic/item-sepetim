@@ -24,7 +24,6 @@ export default function Avatar({ user, size = 'md', className = '' }: AvatarProp
   }
 
   if (user.avatar_url) {
-    // Cache busting: URL'e timestamp ekle
     const avatarUrl = user.avatar_url.includes('?t=') 
       ? user.avatar_url 
       : `${user.avatar_url}?t=${new Date().getTime()}`;
@@ -38,7 +37,6 @@ export default function Avatar({ user, size = 'md', className = '' }: AvatarProp
     );
   }
 
-  // Avatar yoksa, baş harf göster
   const initial = (user.username || user.email || 'U')[0].toUpperCase();
   const colors = [
     'from-primary-500 to-primary-700',

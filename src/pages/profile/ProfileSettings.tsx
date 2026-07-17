@@ -104,9 +104,11 @@ export default function ProfileSettings() {
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !user) return;
+    if (!file || !user) {
+      console.error('Dosya veya kullanıcı yok');
+      return;
+    }
 
-    // Anında boyut kontrolü
     if (file.size > 5 * 1024 * 1024) {
       showToast('Dosya boyutu 5MB\'dan büyük olamaz', 'error');
       return;
@@ -122,26 +124,27 @@ export default function ProfileSettings() {
       });
 
       if (newAvatarUrl) {
-        // Veritabanına kaydet
         const { error } = await supabase
           .from('users')
           .update({ avatar_url: newAvatarUrl })
           .eq('id', user.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Database update hatası:', error);
+          throw error;
+        }
 
-        // Auth store'u güncelle (cache busting için)
         await checkUser();
-        
         setPreviewAvatar(newAvatarUrl);
         showToast('Profil fotoğrafı başarıyla güncellendi', 'success');
+      } else {
+        showToast('Avatar yüklenemedi', 'error');
       }
     } catch (error: any) {
       console.error('Avatar update error:', error);
-      showToast('Avatar güncellenirken bir hata oluştu', 'error');
+      showToast('Avatar güncellenirken bir hata oluştu: ' + error.message, 'error');
     } finally {
       setIsUploadingAvatar(false);
-      // Input'u temizle (aynı dosyayı tekrar seçebilmek için)
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -203,7 +206,7 @@ export default function ProfileSettings() {
       const { error: authError } = await supabase.auth.admin.deleteUser(user?.id || '');
       
       if (authError) {
-        console.warn('Admin yetkisi olmadan auth user silinemez, sadece local logout yapılıyor');
+        console.warn('Admin yetkisi olmadan auth user silinemez');
       }
 
       showToast('Hesabınız başarıyla silindi', 'success');
