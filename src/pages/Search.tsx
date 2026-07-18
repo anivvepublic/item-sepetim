@@ -1,14 +1,13 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search as SearchIcon, X, Filter, TrendingUp, Clock, Gamepad2, Tag } from 'lucide-react';
+import { Search as SearchIcon, Filter, TrendingUp, Gamepad2 } from 'lucide-react';
 import { useListingStore } from '@/lib/store/listingStore';
 import { useSearchStore } from '@/lib/store/searchStore';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 import ListingCard from '@/components/features/ListingCard';
 import SearchBar from '@/components/features/SearchBar';
 import SEO from '@/components/seo/SEO';
-import { formatPrice } from '@/lib/shared/utils';
 import type { Listing } from '@/lib/shared/types';
 
 type SortOption = 'relevance' | 'newest' | 'price-asc' | 'price-desc';
