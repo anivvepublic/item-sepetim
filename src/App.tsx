@@ -20,6 +20,10 @@ const ProfileSettings = lazy(() => import('./pages/profile/ProfileSettings'));
 const ProfileFavorites = lazy(() => import('./pages/profile/ProfileFavorites'));
 const ProfileTransactions = lazy(() => import('./pages/profile/ProfileTransactions'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const About = lazy(() => import('./pages/About'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const FAQ = lazy(() => import('./pages/FAQ'));
+const Contact = lazy(() => import('./pages/Contact'));
 
 function App() {
   const { user, isLoading, checkUser } = useAuthStore();
@@ -49,6 +53,10 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/terms" element={<UserAgreement />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/listings/:id" element={<ListingDetail />} />
               <Route path="/profile" element={<ProfileLayout />}>
                 <Route index element={<ProfileInfo />} />

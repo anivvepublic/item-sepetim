@@ -24,6 +24,11 @@ export const ROUTES = {
   LISTING_DETAIL: '/listings/:id',
   LOGIN: '/login',
   REGISTER: '/register',
+  ABOUT: '/about',
+  PRIVACY: '/privacy',
+  FAQ: '/faq',
+  CONTACT: '/contact',
+  TERMS: '/terms',
   ADMIN_DASHBOARD: '/admin',
   ADMIN_LISTINGS: '/admin/listings',
   ADMIN_USERS: '/admin/users'

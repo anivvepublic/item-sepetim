@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, FileText, Shield, Users, CreditCard, Lock, AlertCircle } from 'lucide-react';
 
 export default function UserAgreement() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-primary-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
@@ -12,13 +14,13 @@ export default function UserAgreement() {
           animate={{ opacity: 1, x: 0 }}
           className="mb-8"
         >
-          <Link
-            to="/register"
+          <button
+            onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-semibold transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-            Kayıt Sayfasına Dön
-          </Link>
+            Geri Dön
+          </button>
         </motion.div>
 
         {/* Header */}
@@ -322,12 +324,12 @@ export default function UserAgreement() {
           <p className="text-neutral-600">
             Bu sözleşmeyi okuyarak, tüm şartları kabul etmiş olursunuz.
           </p>
-          <Link
-            to="/register"
+          <button
+            onClick={() => navigate(-1)}
             className="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl font-semibold hover:shadow-float-lg transition-all"
           >
-            Kayıt Sayfasına Dön
-          </Link>
+            Geri Dön
+          </button>
         </motion.div>
       </div>
     </div>

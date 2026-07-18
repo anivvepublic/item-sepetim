@@ -3,20 +3,20 @@ import { ShoppingCart, ChevronRight } from 'lucide-react';
 
 export default function Footer() {
   const companyLinks = [
-    { label: 'Hakkımızda', path: '/terms' },
-    { label: 'Kariyer', path: '/terms' },
-    { label: 'Basında Biz', path: '/terms' },
-    { label: 'İletişim', path: '/terms' },
-    { label: 'Blog', path: '/terms' },
+    { label: 'Hakkımızda', path: '/about' },
+    { label: 'Kariyer', path: '/about' },
+    { label: 'Basında Biz', path: '/about' },
+    { label: 'İletişim', path: '/contact' },
+    { label: 'Blog', path: '/about' },
   ];
 
   const supportLinks = [
-    { label: 'Yardım Merkezi', path: '/terms' },
-    { label: 'Güvenli Alışveriş', path: '/terms' },
+    { label: 'Yardım Merkezi', path: '/faq' },
+    { label: 'Güvenli Alışveriş', path: '/faq' },
     { label: 'İade Politikası', path: '/terms' },
-    { label: 'SSS', path: '/terms' },
+    { label: 'SSS', path: '/faq' },
     { label: 'Kullanıcı Sözleşmesi', path: '/terms' },
-    { label: 'Gizlilik Politikası', path: '/terms' },
+    { label: 'Gizlilik Politikası', path: '/privacy' },
   ];
 
   return (
@@ -71,9 +71,9 @@ export default function Footer() {
         <div className="mt-12 pt-8 border-t border-neutral-800 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-neutral-500 text-sm">© 2026 Item Sepetim. Tüm hakları saklıdır.</p>
           <div className="flex items-center gap-6 text-sm">
-            <Link to="/terms" className="text-neutral-500 hover:text-primary-400 transition-colors">Gizlilik</Link>
+            <Link to="/privacy" className="text-neutral-500 hover:text-primary-400 transition-colors">Gizlilik</Link>
             <Link to="/terms" className="text-neutral-500 hover:text-primary-400 transition-colors">Şartlar</Link>
-            <Link to="/terms" className="text-neutral-500 hover:text-primary-400 transition-colors">Çerezler</Link>
+            <Link to="/faq" className="text-neutral-500 hover:text-primary-400 transition-colors">Çerezler</Link>
           </div>
         </div>
         <div className="mt-4 pt-4 border-t border-neutral-800/50 flex justify-center">
