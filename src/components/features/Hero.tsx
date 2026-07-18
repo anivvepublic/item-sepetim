@@ -1,19 +1,11 @@
 import { motion } from 'framer-motion';
-import { Search, TrendingUp, Shield, Zap } from 'lucide-react';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { TrendingUp, Shield, Zap } from 'lucide-react';
 import { GAME_CATEGORIES } from '@/lib/shared/constants';
+import { useNavigate } from 'react-router-dom';
+import SearchBar from './SearchBar';
 
 export default function Hero() {
-  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/?game=${encodeURIComponent(searchQuery)}`);
-    }
-  };
 
   const features = [
     { icon: Shield, title: 'Güvenli Alışveriş', description: 'Tüm işlemler şifrelenmiş ve güvende' },
@@ -33,6 +25,7 @@ export default function Hero() {
       </div>
 
       <div className="container-custom relative z-10 py-20 lg:py-32">
+        {/* YAZILAR ORTADA */}
         <div className="max-w-4xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 mb-8">
             <Zap className="w-4 h-4 text-accent-400" />
@@ -49,16 +42,12 @@ export default function Hero() {
             Binlerce oyun hesabı ve item, güvenli alışveriş, hızlı teslimat
           </motion.p>
 
-          <motion.form initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} onSubmit={handleSearch} className="max-w-2xl mx-auto mb-16">
-            <div className="relative">
-              <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Oyun adı, hesap veya item ara..." className="w-full px-6 py-5 pr-16 bg-white/10 backdrop-blur-xl border-2 border-white/20 rounded-2xl text-white placeholder:text-neutral-300 focus:outline-none focus:border-accent-400 focus:bg-white/15 transition-all" style={{ fontFamily: 'Inter, system-ui, sans-serif' }} />
-              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 p-3 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl hover:shadow-float-lg hover:scale-105 transition-all">
-                <Search className="w-5 h-5 text-white" />
-              </button>
-            </div>
-          </motion.form>
+          {/* ARAMA ÇUBUĞU - ORTADA AMA DROPDOWN SOLA AÇILIYOR */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="max-w-3xl mx-auto">
+            <SearchBar variant="hero" />
+          </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="flex flex-wrap justify-center gap-3 mb-16">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="flex flex-wrap justify-center gap-3 mt-8">
             {GAME_CATEGORIES.map((game: string) => (
               <button key={game} onClick={() => navigate(`/?game=${encodeURIComponent(game)}`)} className="px-5 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-sm font-medium text-white hover:bg-white/20 hover:border-accent-400/50 transition-all" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
                 {game}
@@ -66,7 +55,7 @@ export default function Hero() {
             ))}
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }} className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.5 }} className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto mt-16">
             {features.map((feature, index) => (
               <div key={index} className="text-center p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all">
                 <div className="inline-flex items-center justify-center w-14 h-14 bg-accent-500/20 rounded-xl mb-4">

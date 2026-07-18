@@ -6,10 +6,13 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/layout/ScrollToTop';
 import ToastContainer from './components/ui/Toast';
+import ScrollToTopButton from './components/ui/ScrollToTopButton';
+import CookieBanner from './components/ui/CookieBanner';
 import { PageLoader } from './components/ui/Skeleton';
 
 const Home = lazy(() => import('./pages/Home'));
 const Listings = lazy(() => import('./pages/Listings'));
+const Search = lazy(() => import('./pages/Search'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 const UserAgreement = lazy(() => import('./pages/UserAgreement'));
@@ -19,11 +22,11 @@ const ProfileInfo = lazy(() => import('./pages/profile/ProfileInfo'));
 const ProfileSettings = lazy(() => import('./pages/profile/ProfileSettings'));
 const ProfileFavorites = lazy(() => import('./pages/profile/ProfileFavorites'));
 const ProfileTransactions = lazy(() => import('./pages/profile/ProfileTransactions'));
-const NotFound = lazy(() => import('./pages/NotFound'));
 const About = lazy(() => import('./pages/About'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const FAQ = lazy(() => import('./pages/FAQ'));
 const Contact = lazy(() => import('./pages/Contact'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
   const { user, isLoading, checkUser } = useAuthStore();
@@ -50,14 +53,15 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/listings" element={<Listings />} />
+              <Route path="/search" element={<Search />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/terms" element={<UserAgreement />} />
+              <Route path="/listings/:id" element={<ListingDetail />} />
               <Route path="/about" element={<About />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/listings/:id" element={<ListingDetail />} />
               <Route path="/profile" element={<ProfileLayout />}>
                 <Route index element={<ProfileInfo />} />
                 <Route path="favorites" element={<ProfileFavorites />} />
@@ -69,8 +73,11 @@ function App() {
           </Suspense>
         </main>
         <Footer />
+        <ScrollToTopButton />
+        <CookieBanner />
       </div>
     </HelmetProvider>
   );
 }
+
 export default App;

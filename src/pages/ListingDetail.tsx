@@ -1,25 +1,14 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import {
-  ArrowLeft,
-  ChevronLeft,
-  ChevronRight,
-  Package,
-  Tag,
-  Calendar,
-  Clock,
-  User,
-  ShoppingCart,
-  MessageCircle,
-  Shield,
-} from 'lucide-react';
-import type { Listing } from '@/lib/shared/types';
-import { formatPrice, formatDate } from '@/lib/shared/utils';
+import { ArrowLeft, Calendar, Tag, User, Shield, MessageCircle, ShoppingCart, ChevronLeft, ChevronRight, Package, Clock, Plus } from 'lucide-react';
 import { useListingStore } from '@/lib/store/listingStore';
 import { useAuthStore } from '@/lib/store/authStore';
-import SEO from '@/components/seo/SEO';
+import { useCartStore } from '@/lib/store/cartStore';
 import { SkeletonListingDetail } from '@/components/ui/Skeleton';
+import SEO, { getProductSchema } from '@/components/seo/SEO';
+import type { Listing } from '@/lib/shared/types';
+import { formatPrice, formatDate } from '@/lib/shared/utils';
 import ListingCard from '@/components/features/ListingCard';
 
 export default function ListingDetail() {
@@ -27,6 +16,8 @@ export default function ListingDetail() {
   const navigate = useNavigate();
   const { fetchListingById, fetchListings, listings } = useListingStore();
   const { isAuthenticated } = useAuthStore();
+  const { addItem } = useCartStore();
+  
   const [listing, setListing] = useState<Listing | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -35,7 +26,6 @@ export default function ListingDetail() {
   useEffect(() => {
     const loadListing = async () => {
       if (!id) return;
-
       setIsLoading(true);
       const data = await fetchListingById(id);
       setListing(data);
@@ -45,7 +35,6 @@ export default function ListingDetail() {
         await fetchListings({ game: data.game, status: 'active' });
       }
     };
-
     loadListing();
   }, [id, fetchListingById, fetchListings]);
 
@@ -56,11 +45,23 @@ export default function ListingDetail() {
     }
   }, [listings, listing]);
 
+  const handleAddToCart = () => {
+    if (!listing) return;
+    addItem({
+      id: listing.id,
+      title: listing.title,
+      price: listing.price,
+      image: listing.images && listing.images.length > 0 ? listing.images[0] : '',
+      game: listing.game,
+    });
+  };
+
   const handlePurchase = () => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
+    // İleride burası direkt checkout'a gidecek
     alert('Satın alma işlemi yakında aktif olacak!');
   };
 
@@ -75,11 +76,7 @@ export default function ListingDetail() {
   if (isLoading) {
     return (
       <>
-        <SEO
-          title="İlan Detayı Yükleniyor"
-          description="İlan detayları yükleniyor..."
-          noindex={true}
-        />
+        <SEO title="İlan Detayı Yükleniyor" description="İlan detayları yükleniyor..." noindex={true} />
         <SkeletonListingDetail />
       </>
     );
@@ -88,28 +85,16 @@ export default function ListingDetail() {
   if (!listing) {
     return (
       <>
-        <SEO
-          title="İlan Bulunamadı - Item Sepetim"
-          description="Aradığınız ilan bulunamadı veya kaldırılmış olabilir."
-          noindex={true}
-        />
+        <SEO title="İlan Bulunamadı - Item Sepetim" description="Aradığınız ilan bulunamadı veya kaldırılmış olabilir." noindex={true} />
         <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-950">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
             <div className="inline-flex items-center justify-center w-24 h-24 bg-neutral-100 dark:bg-neutral-800 rounded-full mb-6">
               <Package className="w-12 h-12 text-neutral-400" />
             </div>
             <h2 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-3">İlan Bulunamadı</h2>
             <p className="text-neutral-600 dark:text-neutral-400 text-lg mb-8">Bu ilan silinmiş veya taşınmış olabilir.</p>
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl font-semibold hover:shadow-float-lg transition-all"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              Ana Sayfaya Dön
+            <Link to="/" className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl font-semibold hover:shadow-float-lg transition-all">
+              <ArrowLeft className="w-5 h-5" /> Ana Sayfaya Dön
             </Link>
           </motion.div>
         </div>
@@ -117,17 +102,10 @@ export default function ListingDetail() {
     );
   }
 
-  const images = listing.images && listing.images.length > 0
-    ? listing.images
-    : ['https://via.placeholder.com/800x600?text=No+Image'];
+  const images = listing.images && listing.images.length > 0 ? listing.images : ['https://via.placeholder.com/800x600?text=No+Image'];
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev: number) => (prev + 1) % images.length);
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex((prev: number) => (prev - 1 + images.length) % images.length);
-  };
+  const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
 
   return (
     <>
@@ -137,6 +115,7 @@ export default function ListingDetail() {
         image={listing.images?.[0]}
         url={`/listings/${listing.id}`}
         type="product"
+        schema={getProductSchema(listing)}
       />
 
       <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 py-8">
@@ -153,40 +132,23 @@ export default function ListingDetail() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="card overflow-hidden"
-              >
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card overflow-hidden">
                 <div className="relative aspect-video bg-neutral-100 dark:bg-neutral-800">
-                  <img
-                    src={images[currentImageIndex]}
-                    alt={listing.title}
-                    className="w-full h-full object-cover"
-                  />
-
+                  <img src={images[currentImageIndex]} alt={listing.title} className="w-full h-full object-cover" />
                   {images.length > 1 && (
                     <>
-                      <button
-                        onClick={prevImage}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-float hover:bg-white dark:hover:bg-neutral-900 transition-all"
-                      >
+                      <button onClick={prevImage} className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-float hover:bg-white dark:hover:bg-neutral-900 transition-all">
                         <ChevronLeft className="w-6 h-6 text-neutral-900 dark:text-neutral-100" />
                       </button>
-                      <button
-                        onClick={nextImage}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-float hover:bg-white dark:hover:bg-neutral-900 transition-all"
-                      >
+                      <button onClick={nextImage} className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-float hover:bg-white dark:hover:bg-neutral-900 transition-all">
                         <ChevronRight className="w-6 h-6 text-neutral-900 dark:text-neutral-100" />
                       </button>
-
                       <div className="absolute bottom-4 right-4 px-4 py-2 bg-black/70 backdrop-blur-sm rounded-full text-white text-sm font-medium">
                         {currentImageIndex + 1} / {images.length}
                       </div>
                     </>
                   )}
                 </div>
-
                 {images.length > 1 && (
                   <div className="p-4 border-t border-neutral-100 dark:border-neutral-800">
                     <div className="flex gap-2 overflow-x-auto">
@@ -194,11 +156,7 @@ export default function ListingDetail() {
                         <button
                           key={index}
                           onClick={() => setCurrentImageIndex(index)}
-                          className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
-                            currentImageIndex === index
-                              ? 'border-primary-600 shadow-float'
-                              : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600'
-                          }`}
+                          className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${currentImageIndex === index ? 'border-primary-600 shadow-float' : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600'}`}
                         >
                           <img src={image} alt="" className="w-full h-full object-cover" />
                         </button>
@@ -208,24 +166,12 @@ export default function ListingDetail() {
                 )}
               </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="card p-6 lg:p-8"
-              >
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="card p-6 lg:p-8">
                 <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-4">Açıklama</h2>
-                <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap">
-                  {listing.description}
-                </p>
+                <p className="text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-wrap">{listing.description}</p>
               </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="card p-6 lg:p-8"
-              >
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="card p-6 lg:p-8">
                 <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-6">Detaylar</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex items-center gap-3 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors">
@@ -253,9 +199,7 @@ export default function ListingDetail() {
                     <Clock className="w-5 h-5 text-primary-600" />
                     <div>
                       <div className="text-sm text-neutral-500 dark:text-neutral-400">Durum</div>
-                      <div className="font-semibold text-neutral-900 dark:text-neutral-100">
-                        {listing.status === 'active' ? 'Aktif' : listing.status === 'sold' ? 'Satıldı' : 'Beklemede'}
-                      </div>
+                      <div className="font-semibold text-neutral-900 dark:text-neutral-100">{listing.status === 'active' ? 'Aktif' : listing.status === 'sold' ? 'Satıldı' : 'Beklemede'}</div>
                     </div>
                   </div>
                 </div>
@@ -263,21 +207,12 @@ export default function ListingDetail() {
             </div>
 
             <div className="lg:col-span-1">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="card p-6 lg:p-8 sticky top-24"
-              >
-                <h1 className="text-2xl lg:text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-4 leading-tight">
-                  {listing.title}
-                </h1>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="card p-6 lg:p-8 sticky top-24">
+                <h1 className="text-2xl lg:text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-4 leading-tight">{listing.title}</h1>
 
                 <div className="mb-6 pb-6 border-b border-neutral-100 dark:border-neutral-800">
                   <div className="text-sm text-neutral-500 dark:text-neutral-400 mb-1">Fiyat</div>
-                  <div className="text-4xl font-bold text-gradient">
-                    {formatPrice(listing.price)}
-                  </div>
+                  <div className="text-4xl font-bold text-gradient">{formatPrice(listing.price)}</div>
                 </div>
 
                 <div className="mb-6 pb-6 border-b border-neutral-100 dark:border-neutral-800">
@@ -287,9 +222,7 @@ export default function ListingDetail() {
                     </div>
                     <div>
                       <div className="text-sm text-neutral-500 dark:text-neutral-400">Satıcı</div>
-                      <div className="font-semibold text-neutral-900 dark:text-neutral-100">
-                        {listing.seller_id ? 'Kullanıcı' : 'Admin'}
-                      </div>
+                      <div className="font-semibold text-neutral-900 dark:text-neutral-100">{listing.seller_id ? 'Kullanıcı' : 'Admin'}</div>
                     </div>
                   </div>
                 </div>
@@ -298,17 +231,28 @@ export default function ListingDetail() {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={handlePurchase}
-                    className="w-full btn-primary flex items-center justify-center gap-2 group"
+                    onClick={handleAddToCart}
+                    className="w-full py-4 bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-xl font-bold hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all flex items-center justify-center gap-2 group"
                   >
-                    <ShoppingCart className="w-5 h-5" />
-                    {isAuthenticated ? 'Satın Al' : 'Giriş Yap ve Satın Al'}
+                    <Plus className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                    Sepete Ekle
                   </motion.button>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handlePurchase}
+                    className="w-full py-4 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-xl font-bold hover:shadow-float-lg transition-all flex items-center justify-center gap-2 group"
+                  >
+                    <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                    {isAuthenticated ? 'Hemen Satın Al' : 'Giriş Yap ve Satın Al'}
+                  </motion.button>
+
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleContactSeller}
-                    className="w-full btn-secondary flex items-center justify-center gap-2"
+                    className="w-full py-3 border-2 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-xl font-semibold hover:border-primary-600 hover:text-primary-600 dark:hover:border-primary-400 dark:hover:text-primary-400 transition-all flex items-center justify-center gap-2"
                   >
                     <MessageCircle className="w-5 h-5" />
                     {isAuthenticated ? 'Satıcıya Soru Sor' : 'Giriş Yap ve Soru Sor'}
@@ -320,9 +264,7 @@ export default function ListingDetail() {
                     <Shield className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" />
                     <div>
                       <div className="font-semibold text-primary-900 dark:text-primary-100 text-sm mb-1">Güvenli Alışveriş</div>
-                      <div className="text-xs text-primary-700 dark:text-primary-300">
-                        Tüm işlemler şifrelenmiş ve güvende. Paranız koruma altında.
-                      </div>
+                      <div className="text-xs text-primary-700 dark:text-primary-300">Tüm işlemler şifrelenmiş ve güvende. Paranız koruma altında.</div>
                     </div>
                   </div>
                 </div>
@@ -331,12 +273,7 @@ export default function ListingDetail() {
           </div>
 
           {similarListings.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="mt-12"
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-12">
               <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-6">Benzer İlanlar</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {similarListings.map((item: Listing) => (
