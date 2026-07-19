@@ -1,6 +1,7 @@
 import type { User } from '@/lib/shared/types';
 import { create } from 'zustand';
 import { supabase } from '../supabase/client';
+import { showToast } from '@/components/ui/Toast';
 
 interface AuthState {
   user: User | null;
@@ -56,7 +57,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         if (insertError) {
           console.error('[DEBUG] Insert user error:', insertError);
           set({
-            user: { id: data.user.id, email: data.user.email || '', username: email.split('@')[0], is_admin: false, created_at: new Date().toISOString() },
+            user: { id: data.user.id, email: data.user.email || '', username: email.split('@')[0], is_admin: false, created_at: new Date().toISOString() } as User,
             isAuthenticated: true,
             isLoading: false,
           });
@@ -70,6 +71,38 @@ export const useAuthStore = create<AuthState>((set) => ({
           isLoading: false,
         });
       } else {
+        // 🚨 BAN KONTROLÜ (Login Sırasında)
+        if (userData.is_banned) {
+          const banExpiresAt = userData.ban_expires_at ? new Date(userData.ban_expires_at) : null;
+          const now = new Date();
+
+          // Eğer ban süresi dolmuşsa, otomatik olarak banı kaldır ve girişine izin ver
+          if (banExpiresAt && banExpiresAt < now) {
+            await supabase
+              .from('users')
+              .update({ is_banned: false, ban_reason: null, ban_expires_at: null })
+              .eq('id', userData.id);
+            
+            console.log('[DEBUG] Ban süresi dolmuş, otomatik olarak kaldırıldı.');
+            set({
+              user: { ...userData, is_banned: false, ban_reason: null, ban_expires_at: null },
+              isAuthenticated: true,
+              isLoading: false,
+            });
+            return;
+          }
+
+          // Ban hala geçerliyse, oturumu kapat ve hata fırlat
+          await supabase.auth.signOut();
+          const banMessage = banExpiresAt 
+            ? `Hesabınız ${banExpiresAt.toLocaleDateString('tr-TR')} tarihine kadar banlanmıştır. Neden: ${userData.ban_reason || 'Belirtilmedi'}`
+            : `Hesabınız kalıcı olarak banlanmıştır. Neden: ${userData.ban_reason || 'Belirtilmedi'}`;
+          
+          showToast(banMessage, 'error');
+          console.error('[DEBUG] Login blocked: User is banned.');
+          throw new Error(banMessage);
+        }
+
         console.log('[DEBUG] User found:', userData);
         set({
           user: userData,
@@ -114,7 +147,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (insertError) {
         console.error('[DEBUG] Insert user error:', insertError);
         set({
-          user: { id: data.user.id, email: data.user.email || '', username: username, is_admin: false, created_at: new Date().toISOString() },
+          user: { id: data.user.id, email: data.user.email || '', username: username, is_admin: false, created_at: new Date().toISOString() } as User,
           isAuthenticated: true,
           isLoading: false,
         });
@@ -173,7 +206,7 @@ export const useAuthStore = create<AuthState>((set) => ({
           if (insertError) {
             console.error('[DEBUG] Insert user error:', insertError);
             set({
-              user: { id: session.user.id, email: session.user.email || '', username: session.user.email?.split('@')[0], is_admin: false, created_at: new Date().toISOString() },
+              user: { id: session.user.id, email: session.user.email || '', username: session.user.email?.split('@')[0], is_admin: false, created_at: new Date().toISOString() } as User,
               isAuthenticated: true,
               isLoading: false,
             });
@@ -187,6 +220,39 @@ export const useAuthStore = create<AuthState>((set) => ({
             isLoading: false,
           });
         } else {
+          // 🚨 BAN KONTROLÜ (Sayfa Yenilendiğinde / Uygulama Başlatıldığında)
+          if (userData.is_banned) {
+            const banExpiresAt = userData.ban_expires_at ? new Date(userData.ban_expires_at) : null;
+            const now = new Date();
+
+            // Eğer ban süresi dolmuşsa, otomatik olarak banı kaldır ve girişine izin ver
+            if (banExpiresAt && banExpiresAt < now) {
+              await supabase
+                .from('users')
+                .update({ is_banned: false, ban_reason: null, ban_expires_at: null })
+                .eq('id', userData.id);
+              
+              console.log('[DEBUG] Ban süresi dolmuş, otomatik olarak kaldırıldı.');
+              set({
+                user: { ...userData, is_banned: false, ban_reason: null, ban_expires_at: null },
+                isAuthenticated: true,
+                isLoading: false,
+              });
+              return;
+            }
+
+            // Ban hala geçerliyse, oturumu kapat ve uyarı göster
+            await supabase.auth.signOut();
+            const banMessage = banExpiresAt 
+              ? `Hesabınız ${banExpiresAt.toLocaleDateString('tr-TR')} tarihine kadar banlanmıştır. Neden: ${userData.ban_reason || 'Belirtilmedi'}`
+              : `Hesabınız kalıcı olarak banlanmıştır. Neden: ${userData.ban_reason || 'Belirtilmedi'}`;
+            
+            showToast(banMessage, 'error');
+            console.error('[DEBUG] checkUser blocked: User is banned.');
+            set({ user: null, isAuthenticated: false, isLoading: false });
+            return;
+          }
+
           console.log('[DEBUG] User found:', userData);
           set({
             user: userData,
