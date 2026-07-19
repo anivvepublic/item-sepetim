@@ -10,6 +10,9 @@ import ScrollToTopButton from './components/ui/ScrollToTopButton';
 import CookieBanner from './components/ui/CookieBanner';
 import { PageLoader } from './components/ui/Skeleton';
 
+// Features
+import FloatingChatButton from './components/features/FloatingChatButton';
+
 const Home = lazy(() => import('./pages/Home'));
 const Listings = lazy(() => import('./pages/Listings'));
 const Search = lazy(() => import('./pages/Search'));
@@ -22,6 +25,7 @@ const ProfileInfo = lazy(() => import('./pages/profile/ProfileInfo'));
 const ProfileSettings = lazy(() => import('./pages/profile/ProfileSettings'));
 const ProfileFavorites = lazy(() => import('./pages/profile/ProfileFavorites'));
 const ProfileTransactions = lazy(() => import('./pages/profile/ProfileTransactions'));
+const ProfileMessages = lazy(() => import('./pages/profile/ProfileMessages'));
 const About = lazy(() => import('./pages/About'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const FAQ = lazy(() => import('./pages/FAQ'));
@@ -64,6 +68,7 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/profile" element={<ProfileLayout />}>
                 <Route index element={<ProfileInfo />} />
+                <Route path="messages" element={<ProfileMessages />} />
                 <Route path="favorites" element={<ProfileFavorites />} />
                 <Route path="transactions" element={<ProfileTransactions />} />
                 <Route path="settings" element={<ProfileSettings />} />
@@ -75,6 +80,9 @@ function App() {
         <Footer />
         <ScrollToTopButton />
         <CookieBanner />
+        
+        {/* Floating Chat Button - Tüm sayfalarda görünür */}
+        <FloatingChatButton />
       </div>
     </HelmetProvider>
   );
