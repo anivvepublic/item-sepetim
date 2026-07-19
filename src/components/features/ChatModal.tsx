@@ -24,8 +24,7 @@ export default function ChatModal({ isOpen, onClose, listingId, sellerId, listin
     isLoading, 
     openConversation, 
     sendMessage, 
-    subscribeToMessages, 
-    unsubscribeFromMessages 
+    subscribeToMessages,
   } = useChatStore();
   
   const { user } = useAuthStore();
@@ -40,16 +39,19 @@ export default function ChatModal({ isOpen, onClose, listingId, sellerId, listin
   }, [isOpen, listingId, sellerId, isInitialized]);
 
   useEffect(() => {
-    if (conversationId && !messages.length) {
-      console.log('[ChatModal] 📂 Conversation açılıyor:', conversationId);
-      openConversation(conversationId);
-      const unsubscribe = subscribeToMessages(conversationId);
-      return () => {
-        console.log('[ChatModal] 🔌 Subscription kapatılıyor');
-        unsubscribe();
-      };
-    }
-  }, [conversationId]);
+    if (!conversationId) return;
+
+    console.log('[ChatModal] 📂 Conversation açılıyor:', conversationId);
+    openConversation(conversationId);
+
+    // subscribeToMessages bir cleanup fonksiyonu döndürüyorsa kullan
+    const cleanup = subscribeToMessages(conversationId);
+
+    return () => {
+      console.log('[ChatModal] 🔌 Subscription kapatılıyor');
+      cleanup();
+    };
+  }, [conversationId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

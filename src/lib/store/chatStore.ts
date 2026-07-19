@@ -47,7 +47,7 @@ interface ChatStore {
   markAsRead: (messageId: string) => Promise<void>;
   startTyping: (conversationId: string) => void;
   stopTyping: (conversationId: string) => void;
-  subscribeToMessages: (conversationId: string) => void;
+  subscribeToMessages: (conversationId: string) => () => void;
   unsubscribeFromMessages: () => void;
 }
 

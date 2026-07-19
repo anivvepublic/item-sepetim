@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Heart, Share2, MessageSquare, 
-  Calendar, Eye, Tag, MapPin, Phone, Mail,
+  Calendar, Eye, Tag,
   Shield, CheckCircle, AlertCircle
 } from 'lucide-react';
 import { useListingStore } from '@/lib/store/listingStore';
@@ -13,12 +13,24 @@ import ChatModal from '@/components/features/ChatModal';
 import SEO from '@/components/seo/SEO';
 import type { Listing } from '@/lib/shared/types';
 
+// Listing type'ında henüz tanımlı olmayan ama API'den gelebilecek opsiyonel alanlar
+interface ExtendedListing extends Listing {
+  views_count?: number;
+  features?: { key: string; value: string }[];
+  tags?: string[];
+  seller?: {
+    username?: string;
+    created_at?: string;
+    listings_count?: number;
+  };
+}
+
 export default function ListingDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { listings, isLoading, fetchListings } = useListingStore();
-  const { user, isAuthenticated } = useAuthStore();
-  const [listing, setListing] = useState<Listing | null>(null);
+  const { isAuthenticated } = useAuthStore();
+  const [listing, setListing] = useState<ExtendedListing | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -32,7 +44,7 @@ export default function ListingDetail() {
     if (listings.length > 0 && id) {
       const found = listings.find((l: Listing) => l.id === id);
       if (found) {
-        setListing(found);
+        setListing(found as ExtendedListing);
       }
     }
   }, [listings, id]);
