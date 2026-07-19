@@ -5,6 +5,7 @@ import { CheckCircle, XCircle, Loader2, Home, Package, FileText } from 'lucide-r
 import { shopierPaymentService, type ShopierCallbackPayload } from '@/lib/services/shopier';
 import SEO from '@/components/seo/SEO';
 import { usePaymentStore } from '@/lib/store/paymentStore';
+import { useTransactionStore } from '@/lib/store/transactionStore';
 
 export default function PaymentResult() {
   const [searchParams] = useSearchParams();
@@ -13,6 +14,7 @@ export default function PaymentResult() {
   const [message, setMessage] = useState('Odeme sonucu kontrol ediliyor...');
 
   const { reset, items } = usePaymentStore();
+  const { createTransaction } = useTransactionStore();
 
   useEffect(() => {
     const orderIdParam = searchParams.get('orderId');
@@ -40,6 +42,14 @@ export default function PaymentResult() {
     if (isVerified) {
       setStatus('success');
       setMessage('Odemeniz basariyla alindi. Siparis durumunuzu "Islemlerim" sayfasindan takip edebilirsiniz.');
+
+      // Basarili odeme sonrasi transaction kaydi olustur
+      if (items.length > 0) {
+        items.forEach((item) => {
+          createTransaction(item.listingId, item.sellerId, 'pending');
+        });
+      }
+
       // Basarili odeme sonrasi odeme state'i temizlenebilir
       if (orderIdParam) {
         reset();

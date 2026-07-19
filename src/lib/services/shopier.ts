@@ -9,6 +9,8 @@
  * - Client'tan sadece ödeme başlatma isteği gönderin, gerçek API çağrısını backend yapın.
  */
 
+import { supabase } from '../supabase/client';
+
 export interface ShopierBuyer {
   id: string;
   email: string;
@@ -79,9 +81,59 @@ class ShopierPaymentService {
     );
   }
 
+  private useEdgeFunction(): boolean {
+    const useEdge = (import.meta as any).env.VITE_SHOPIER_USE_EDGE === 'true';
+    return useEdge;
+  }
+
+  /**
+   * Supabase Edge Function uzerinden guvenli Shopier odemesi baslatir.
+   * API key/secret client'a hicbir zaman exposed olmaz.
+   */
+  async createOrderViaEdge(params: CreateShopierOrderParams): Promise<ShopierPaymentResult> {
+    try {
+      const { callbackUrl, returnUrl } = this.getDefaultCallbackUrls();
+
+      const { data, error } = await supabase.functions.invoke('shopier-payment', {
+        body: {
+          orderId: params.orderId,
+          buyer: params.buyer,
+          items: params.items,
+          currency: params.currency || 'TRY',
+          conversationId: params.conversationId || params.orderId,
+          callbackUrl: params.callbackUrl || callbackUrl,
+          returnUrl: params.returnUrl || returnUrl,
+        },
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Edge Function hatasi');
+      }
+
+      if (!data?.success || !data.paymentUrl) {
+        throw new Error(data?.error || 'Edge Function odeme linki donmedi');
+      }
+
+      return {
+        success: true,
+        paymentUrl: data.paymentUrl,
+        orderId: data.orderId || params.orderId,
+        conversationId: data.conversationId || params.conversationId,
+      };
+    } catch (error: any) {
+      console.error('[Shopier] Edge Function odeme hatasi:', error);
+      return {
+        success: false,
+        orderId: params.orderId,
+        error: error.message || 'Edge Function uzerinden odeme baslatilamadi',
+      };
+    }
+  }
+
   /**
    * Yeni bir Shopier ödeme siparişi oluşturur.
-   * Gerçek entegrasyonda bu fonksiyon backend tarafında çalışmalıdır.
+   * Varsayilan olarak Supabase Edge Function kullanir.
+   * Edge Function devre disiysa veya VITE_SHOPIER_USE_EDGE=false ise dogrudan API cagrisi yapar.
    */
   async createOrder(params: CreateShopierOrderParams): Promise<ShopierPaymentResult> {
     try {
@@ -89,7 +141,7 @@ class ShopierPaymentService {
         console.warn(
           '[Shopier] API bilgileri yapilandirilmamis. Mock odeme linki donduruluyor. '
           + 'Gercek entegrasyon icin .env dosyasindaki VITE_SHOPIER_API_KEY ve VITE_SHOPIER_API_SECRET degerlerini guncelleyin '
-          + 've bu istegi bir backend/Edge Function uzerinden yapin.'
+          + 'veya Supabase Edge Function icin SHOPIER_API_KEY ve SHOPIER_API_SECRET ortam degiskenlerini ayarlayin.'
         );
 
         return {
@@ -98,6 +150,10 @@ class ShopierPaymentService {
           orderId: params.orderId,
           conversationId: params.conversationId,
         };
+      }
+
+      if (this.useEdgeFunction()) {
+        return this.createOrderViaEdge(params);
       }
 
       const { callbackUrl, returnUrl } = this.getDefaultCallbackUrls();

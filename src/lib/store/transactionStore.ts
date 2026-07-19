@@ -15,7 +15,7 @@ interface TransactionState {
   transactions: Transaction[];
   isLoading: boolean;
   fetchTransactions: () => Promise<void>;
-  createTransaction: (listingId: string, status?: Transaction['status']) => Promise<Transaction | null>;
+  createTransaction: (listingId: string, sellerId?: string, status?: Transaction['status']) => Promise<Transaction | null>;
   getCompletedCount: () => number;
   getTotalSpent: () => number;
 }
@@ -53,7 +53,7 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
     }
   },
 
-  createTransaction: async (listingId: string, status: Transaction['status'] = 'pending') => {
+  createTransaction: async (listingId: string, sellerId?: string, status: Transaction['status'] = 'pending') => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) {
       console.error('[Transaction] Kullanici girisi yok');
@@ -61,13 +61,18 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
     }
 
     try {
+      const insertPayload: any = {
+        listing_id: listingId,
+        buyer_id: session.user.id,
+        status,
+      };
+      if (sellerId) {
+        insertPayload.seller_id = sellerId;
+      }
+
       const { data, error } = await supabase
         .from('transactions')
-        .insert([{
-          listing_id: listingId,
-          buyer_id: session.user.id,
-          status,
-        }])
+        .insert([insertPayload])
         .select('*, listings(*)')
         .single();
 

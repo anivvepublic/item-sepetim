@@ -37,6 +37,7 @@ export interface Transaction {
   id: string;
   listing_id: string;
   buyer_id: string;
+  seller_id?: string;
   status: 'pending' | 'completed' | 'cancelled';
   created_at: string;
 }
