@@ -4,10 +4,13 @@ import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Heart, Share2, MessageSquare, 
   Calendar, Eye, Tag, Shield, CheckCircle, 
-  AlertCircle, ChevronLeft, ChevronRight, X
+  AlertCircle, ChevronLeft, ChevronRight, X,
+  ShoppingCart, CreditCard
 } from 'lucide-react';
 import { useListingStore } from '@/lib/store/listingStore';
 import { useAuthStore } from '@/lib/store/authStore';
+import { useCartStore } from '@/lib/store/cartStore';
+import { usePaymentStore } from '@/lib/store/paymentStore';
 import { formatPrice, formatDate } from '@/lib/shared/utils';
 import ChatModal from '@/components/features/ChatModal';
 import SEO from '@/components/seo/SEO';
@@ -18,6 +21,8 @@ export default function ListingDetail() {
   const navigate = useNavigate();
   const { listings, isLoading, fetchListings } = useListingStore();
   const { isAuthenticated } = useAuthStore();
+  const { addItem } = useCartStore();
+  const { setPaymentItems } = usePaymentStore();
   const [listing, setListing] = useState<Listing | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -62,6 +67,37 @@ export default function ListingDetail() {
       return;
     }
     setIsChatOpen(true);
+  };
+
+  const handleAddToCart = () => {
+    if (!listing) return;
+    addItem({
+      id: listing.id,
+      title: listing.title,
+      price: listing.price,
+      image: listing.images?.[0] || '',
+      game: listing.game,
+    });
+  };
+
+  const handleBuyNow = () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    if (!listing) return;
+
+    setPaymentItems([{
+      id: listing.id,
+      listingId: listing.id,
+      title: listing.title,
+      price: listing.price,
+      image: listing.images?.[0],
+      game: listing.game,
+      sellerId: listing.seller_id,
+    }]);
+
+    navigate('/checkout');
   };
 
   const nextImage = () => {
@@ -321,6 +357,14 @@ export default function ListingDetail() {
                 className="bg-white dark:bg-neutral-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-neutral-200 dark:border-neutral-800 space-y-3 lg:sticky lg:top-20"
               >
                 <button
+                  onClick={handleBuyNow}
+                  className="w-full flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-success-500 to-success-600 text-white rounded-xl font-bold hover:shadow-lg transition-all"
+                >
+                  <CreditCard className="w-5 h-5" />
+                  Simdi Satin Al
+                </button>
+
+                <button
                   onClick={handleContactSeller}
                   className="w-full flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-medium hover:shadow-lg transition-all"
                 >
@@ -328,25 +372,34 @@ export default function ListingDetail() {
                   Satıcıya Mesaj At
                 </button>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3">
+                  <button
+                    onClick={handleAddToCart}
+                    className="flex items-center justify-center gap-2 px-2 sm:px-3 py-3 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded-xl font-medium hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all"
+                    title="Sepete Ekle"
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    <span className="text-sm hidden sm:inline">Sepete</span>
+                  </button>
+
                   <button
                     onClick={handleFavorite}
-                    className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-3 rounded-xl font-medium transition-all ${
+                    className={`flex items-center justify-center gap-2 px-2 sm:px-3 py-3 rounded-xl font-medium transition-all ${
                       isFavorite
                         ? 'bg-red-50 dark:bg-red-900/20 text-red-500 border-2 border-red-200 dark:border-red-800'
                         : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700'
                     }`}
                   >
                     <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
-                    <span className="text-sm">Favori</span>
+                    <span className="text-sm hidden sm:inline">Favori</span>
                   </button>
 
                   <button
                     onClick={handleShare}
-                    className="flex items-center justify-center gap-2 px-3 sm:px-4 py-3 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded-xl font-medium hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all"
+                    className="flex items-center justify-center gap-2 px-2 sm:px-3 py-3 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded-xl font-medium hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all"
                   >
                     <Share2 className="w-5 h-5" />
-                    <span className="text-sm">Paylaş</span>
+                    <span className="text-sm hidden sm:inline">Paylaş</span>
                   </button>
                 </div>
               </motion.div>
@@ -471,11 +524,18 @@ export default function ListingDetail() {
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl border-t border-neutral-200 dark:border-neutral-800 px-4 py-3 pb-safe">
         <div className="flex items-center gap-3">
           <button
-            onClick={handleContactSeller}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
+            onClick={handleBuyNow}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-success-500 to-success-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
           >
-            <MessageSquare className="w-5 h-5" />
-            Satıcıya Mesaj At
+            <CreditCard className="w-5 h-5" />
+            Satin Al
+          </button>
+          <button
+            onClick={handleAddToCart}
+            className="p-3 bg-neutral-100 dark:bg-neutral-800 border-2 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-xl transition-all"
+            aria-label="Sepete Ekle"
+          >
+            <ShoppingCart className="w-5 h-5" />
           </button>
           <button
             onClick={handleFavorite}
@@ -487,13 +547,6 @@ export default function ListingDetail() {
             aria-label="Favorilere Ekle"
           >
             <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
-          </button>
-          <button
-            onClick={handleShare}
-            className="p-3 bg-neutral-100 dark:bg-neutral-800 border-2 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-xl transition-all"
-            aria-label="Paylaş"
-          >
-            <Share2 className="w-5 h-5" />
           </button>
         </div>
       </div>

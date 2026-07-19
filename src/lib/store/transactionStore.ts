@@ -15,6 +15,7 @@ interface TransactionState {
   transactions: Transaction[];
   isLoading: boolean;
   fetchTransactions: () => Promise<void>;
+  createTransaction: (listingId: string, status?: Transaction['status']) => Promise<Transaction | null>;
   getCompletedCount: () => number;
   getTotalSpent: () => number;
 }
@@ -49,6 +50,37 @@ export const useTransactionStore = create<TransactionState>((set, get) => ({
     } catch (error) {
       console.error('[DEBUG] Fetch transactions error:', error);
       set({ isLoading: false });
+    }
+  },
+
+  createTransaction: async (listingId: string, status: Transaction['status'] = 'pending') => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) {
+      console.error('[Transaction] Kullanici girisi yok');
+      return null;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('transactions')
+        .insert([{
+          listing_id: listingId,
+          buyer_id: session.user.id,
+          status,
+        }])
+        .select('*, listings(*)')
+        .single();
+
+      if (error) throw error;
+
+      // Yerel listeyi guncelle
+      const current = get().transactions;
+      set({ transactions: [data, ...current] });
+
+      return data as Transaction;
+    } catch (error) {
+      console.error('[DEBUG] Create transaction error:', error);
+      return null;
     }
   },
 

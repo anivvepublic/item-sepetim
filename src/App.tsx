@@ -30,6 +30,8 @@ const About = lazy(() => import('./pages/About'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const FAQ = lazy(() => import('./pages/FAQ'));
 const Contact = lazy(() => import('./pages/Contact'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+const PaymentResult = lazy(() => import('./pages/PaymentResult'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
@@ -66,6 +68,8 @@ function App() {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/payment/result" element={<PaymentResult />} />
               <Route path="/profile" element={<ProfileLayout />}>
                 <Route index element={<ProfileInfo />} />
                 <Route path="messages" element={<ProfileMessages />} />

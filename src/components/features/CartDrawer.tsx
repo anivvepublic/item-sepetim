@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Trash2, ShoppingBag } from 'lucide-react';
 import { useCartStore, type CartItem } from '@/lib/store/cartStore';
+import { usePaymentStore } from '@/lib/store/paymentStore';
 import { formatPrice } from '@/lib/shared/utils';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/lib/store/authStore';
@@ -13,12 +14,13 @@ interface CartDrawerProps {
 
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { items, removeItem, clearCart, getTotalPrice } = useCartStore();
+  const { setPaymentItems } = usePaymentStore();
   const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
 
   const handleCheckout = () => {
     if (items.length === 0) return;
-    
+
     if (!isAuthenticated) {
       showToast('Ödemeye geçmek için lütfen giriş yapın', 'info');
       onClose();
@@ -26,9 +28,19 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       return;
     }
 
-    // TODO: İleride burası /checkout sayfasına yönlendirilecek
-    showToast('Ödeme sayfası yakında aktif olacak!', 'info');
+    const paymentItems = items.map((item: CartItem) => ({
+      id: item.id,
+      listingId: item.id,
+      title: item.title,
+      price: item.price,
+      image: item.image,
+      game: item.game,
+      sellerId: '',
+    }));
+
+    setPaymentItems(paymentItems);
     onClose();
+    navigate('/checkout?source=cart');
   };
 
   return (
