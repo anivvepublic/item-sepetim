@@ -32,13 +32,13 @@ export default function Hero() {
             <span className="text-sm font-medium text-white">Türkiye'nin #1 Oyun Pazarı</span>
           </motion.div>
 
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-relaxed tracking-wide text-white" style={{ fontFamily: 'Inter, system-ui, sans-serif', letterSpacing: '0.02em' }}>
-            <span className="block mb-2">Oyun Hesapları ve</span>
-            <span className="block mb-2 bg-gradient-to-r from-accent-400 to-accent-500 bg-clip-text text-transparent">Itemler İçin</span>
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight sm:leading-relaxed tracking-wide text-white" style={{ fontFamily: 'Inter, system-ui, sans-serif', letterSpacing: '0.02em' }}>
+            <span className="block mb-1 sm:mb-2">Oyun Hesapları ve</span>
+            <span className="block mb-1 sm:mb-2 bg-gradient-to-r from-accent-400 to-accent-500 bg-clip-text text-transparent">Itemler İçin</span>
             <span className="block">Tek Adres</span>
           </motion.h1>
 
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="text-xl md:text-2xl text-neutral-200 mb-12 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="text-lg sm:text-xl md:text-2xl text-neutral-200 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
             Binlerce oyun hesabı ve item, güvenli alışveriş, hızlı teslimat
           </motion.p>
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Heart, Package, Settings, Shield, LogOut } from 'lucide-react';
+import { User, Heart, Package, Settings, Shield, LogOut, Menu, X } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
 import Avatar from '@/components/ui/Avatar';
 
@@ -38,7 +38,7 @@ export default function ProfileLayout() {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg"
             >
-              <Settings className="w-6 h-6" />
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
 

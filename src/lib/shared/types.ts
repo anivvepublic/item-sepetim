@@ -21,6 +21,15 @@ export interface Listing {
   seller_id: string;
   created_at: string;
   updated_at: string;
+  views_count?: number;
+  features?: { key: string; value: string }[];
+  tags?: string[];
+  seller?: {
+    id: string;
+    username: string;
+    created_at: string;
+    listings_count: number;
+  };
 }
 
 // Transaction types

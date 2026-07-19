@@ -168,7 +168,7 @@ export default function ChatModal({ isOpen, onClose, listingId, sellerId, listin
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.9, opacity: 0, y: 20 }}
           onClick={(e) => e.stopPropagation()}
-          className="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-2xl h-[600px] flex flex-col overflow-hidden"
+          className="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-2xl h-[85vh] sm:h-[600px] flex flex-col overflow-hidden"
         >
           {/* Header */}
           <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between">

@@ -91,6 +91,10 @@
   .bg-gradient-accent {
     @apply bg-gradient-to-br from-accent-500 to-accent-700;
   }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
 
 /* ==========================================

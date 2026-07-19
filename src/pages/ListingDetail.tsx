@@ -17,7 +17,7 @@ export default function ListingDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { listings, isLoading, fetchListings } = useListingStore();
-  const { user, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const [listing, setListing] = useState<Listing | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -126,7 +126,7 @@ export default function ListingDetail() {
               <ArrowLeft className="w-5 h-5" />
               <span className="text-sm font-medium hidden sm:inline">Geri Dön</span>
             </button>
-            <h1 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 truncate max-w-[200px] sm:max-w-[400px]">
+            <h1 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 truncate max-w-[140px] sm:max-w-[300px] lg:max-w-[400px]">
               {listing.title}
             </h1>
             <div className="flex items-center gap-2">
@@ -150,8 +150,8 @@ export default function ListingDetail() {
           </div>
         </div>
 
-        <div className="container-custom py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="container-custom py-4 sm:py-6 px-3 sm:px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             
             {/* Sol: Görsel Galerisi (2/3) */}
             <div className="lg:col-span-2 space-y-4">
@@ -252,7 +252,7 @@ export default function ListingDetail() {
                   </div>
                 </div>
 
-                <div className="text-4xl font-bold bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent mb-6">
+                <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent mb-6">
                   {formatPrice(listing.price)}
                 </div>
 
@@ -318,11 +318,11 @@ export default function ListingDetail() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white dark:bg-neutral-900 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-neutral-800 space-y-3 sticky top-20"
+                className="bg-white dark:bg-neutral-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-neutral-200 dark:border-neutral-800 space-y-3 lg:sticky lg:top-20"
               >
                 <button
                   onClick={handleContactSeller}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-medium hover:shadow-lg transition-all"
+                  className="w-full flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-medium hover:shadow-lg transition-all"
                 >
                   <MessageSquare className="w-5 h-5" />
                   Satıcıya Mesaj At
@@ -331,7 +331,7 @@ export default function ListingDetail() {
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={handleFavorite}
-                    className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all ${
+                    className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-3 rounded-xl font-medium transition-all ${
                       isFavorite
                         ? 'bg-red-50 dark:bg-red-900/20 text-red-500 border-2 border-red-200 dark:border-red-800'
                         : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700'
@@ -343,7 +343,7 @@ export default function ListingDetail() {
 
                   <button
                     onClick={handleShare}
-                    className="flex items-center justify-center gap-2 px-4 py-3 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded-xl font-medium hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all"
+                    className="flex items-center justify-center gap-2 px-3 sm:px-4 py-3 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded-xl font-medium hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all"
                   >
                     <Share2 className="w-5 h-5" />
                     <span className="text-sm">Paylaş</span>
@@ -356,7 +356,7 @@ export default function ListingDetail() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-white dark:bg-neutral-900 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-neutral-800"
+                className="bg-white dark:bg-neutral-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-neutral-200 dark:border-neutral-800"
               >
                 <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4 flex items-center gap-2">
                   <Shield className="w-5 h-5 text-primary-500" />
@@ -408,7 +408,7 @@ export default function ListingDetail() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-6"
+                className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 sm:p-6"
               >
                 <div className="flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
@@ -466,6 +466,37 @@ export default function ListingDetail() {
           </div>
         </motion.div>
       )}
+
+      {/* Mobile Bottom Action Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl border-t border-neutral-200 dark:border-neutral-800 px-4 py-3 pb-safe">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleContactSeller}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
+          >
+            <MessageSquare className="w-5 h-5" />
+            Satıcıya Mesaj At
+          </button>
+          <button
+            onClick={handleFavorite}
+            className={`p-3 rounded-xl border-2 transition-all ${
+              isFavorite
+                ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-500'
+                : 'bg-neutral-100 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300'
+            }`}
+            aria-label="Favorilere Ekle"
+          >
+            <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
+          </button>
+          <button
+            onClick={handleShare}
+            className="p-3 bg-neutral-100 dark:bg-neutral-800 border-2 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-xl transition-all"
+            aria-label="Paylaş"
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
 
       {/* Chat Modal */}
       {listing && (

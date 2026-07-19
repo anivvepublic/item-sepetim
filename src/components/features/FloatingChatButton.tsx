@@ -169,7 +169,7 @@ export default function FloatingChatButton() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:shadow-primary-500/50 transition-shadow"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:shadow-primary-500/50 transition-shadow"
       >
         <MessageSquare className="w-6 h-6" />
         {totalUnread > 0 && (
@@ -199,7 +199,7 @@ export default function FloatingChatButton() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 100, scale: 0.9 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed bottom-24 right-6 z-50 w-96 max-h-[600px] bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden flex flex-col"
+              className="fixed bottom-24 right-3 sm:right-6 z-50 w-[calc(100vw-1.5rem)] sm:w-96 max-w-md max-h-[600px] bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden flex flex-col"
             >
               {/* Header */}
               <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
