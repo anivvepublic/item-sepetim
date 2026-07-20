@@ -3,11 +3,13 @@ import { Shield, Zap, TrendingUp, ArrowRight, Star, Users, Package } from 'lucid
 import { useNavigate } from 'react-router-dom';
 
 const HERO_IMAGES = [
-  'https://cdn.cloudflare.steamstatic.com/steam/apps/730/capsule_616x353.jpg',
-  'https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/capsule_616x353.jpg',
-  'https://cdn.cloudflare.steamstatic.com/steam/apps/578080/capsule_616x353.jpg',
-  'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/capsule_616x353.jpg',
+  'https://steamcdn-a.akamaihd.net/steam/apps/730/library_600x900_2x.jpg',
+  'https://steamcdn-a.akamaihd.net/steam/apps/578080/library_600x900_2x.jpg',
+  'https://steamcdn-a.akamaihd.net/steam/apps/271590/library_600x900_2x.jpg',
+  'https://steamcdn-a.akamaihd.net/steam/apps/1172470/library_600x900_2x.jpg',
 ];
+
+const GAME_LABELS = ['CS2', 'PUBG', 'GTA V', 'RDR2'];
 
 const STATS = [
   { icon: Package, value: '150K+', label: 'Aktif İlan' },
@@ -162,7 +164,7 @@ export default function Hero() {
                     {/* Bottom label */}
                     <div className="absolute bottom-3 inset-x-0 flex justify-center">
                       <span className="text-[10px] font-bold text-white/70 tracking-widest uppercase">
-                        {['CS2', 'PUBG', 'LoL', 'RDR2'][i]}
+                        {GAME_LABELS[i]}
                       </span>
                     </div>
                   </motion.div>

@@ -45,20 +45,22 @@ export default function Header() {
         }`}
       >
         <div className="container-custom">
-          <div className="flex items-center justify-between h-20">
-            {/* LOGO */}
-            <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 bg-gradient-to-br from-primary-600 to-primary-400 rounded-xl flex items-center justify-center shadow-md shadow-primary-900/30">
-                <Gamepad2 className="w-4.5 h-4.5 text-white" />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-lg font-bold bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent">Item Sepetim</span>
-                <span className="text-[10px] text-neutral-500 dark:text-neutral-500 mt-0.5 font-medium">Oyun Pazarı</span>
-              </div>
-            </Link>
+          <div className="flex items-center justify-between h-20 gap-6">
+            {/* SOL KISIM: LOGO + NAVİGASYON */}
+            <div className="flex items-center gap-8 xl:gap-12">
+              {/* LOGO */}
+              <Link to="/" className="flex items-center gap-2.5 group shrink-0">
+                <div className="w-9 h-9 bg-gradient-to-br from-primary-600 to-primary-400 rounded-xl flex items-center justify-center shadow-md shadow-primary-900/30">
+                  <Gamepad2 className="w-4.5 h-4.5 text-white" />
+                </div>
+                <div className="flex flex-col leading-none">
+                  <span className="text-lg font-bold bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent">Item Sepetim</span>
+                  <span className="text-[10px] text-neutral-500 dark:text-neutral-500 mt-0.5 font-medium">Oyun Pazarı</span>
+                </div>
+              </Link>
 
-            {/* MASAÜSTÜ NAVİGASYON */}
-            <nav className="hidden lg:flex items-center gap-7">
+              {/* MASAÜSTÜ NAVİGASYON */}
+              <nav className="hidden lg:flex items-center gap-6">
               {[
                 { label: 'Tüm İlanlar', href: '/listings' },
                 { label: 'Hesaplar', href: '/listings?category=Hesap' },
@@ -73,18 +75,26 @@ export default function Header() {
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 rounded-full transition-all duration-300 group-hover:w-full" />
                 </Link>
               ))}
-            </nav>
+              </nav>
+            </div>
+
+            {/* ORTA KISIM: ARAMA ÇUBUĞU */}
+            <div className="hidden lg:block flex-1 max-w-md xl:max-w-lg">
+              <div 
+                onClick={() => navigate('/search')}
+                className="relative group cursor-text"
+              >
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Search className="h-4 w-4 text-neutral-400 group-hover:text-primary-500 transition-colors" />
+                </div>
+                <div className="w-full bg-neutral-100 dark:bg-neutral-800/50 hover:bg-neutral-200/70 dark:hover:bg-neutral-800 border border-transparent hover:border-neutral-200 dark:hover:border-neutral-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-neutral-500 dark:text-neutral-400 transition-all cursor-text flex items-center">
+                  Oyun, hesap veya item ara...
+                </div>
+              </div>
+            </div>
 
             {/* MASAÜSTÜ SAĞ TARAF */}
-            <div className="hidden lg:flex items-center gap-2">
-              {/* ARAMA İKONU - HER SAYFADA GÖRÜNÜR */}
-              <button 
-                onClick={() => navigate('/search')}
-                className="p-2.5 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors"
-                title="Ara"
-              >
-                <Search className="w-5 h-5" />
-              </button>
+            <div className="hidden lg:flex items-center gap-2 shrink-0">
 
               {/* TEMA DEĞİŞTİRME */}
               <button 
