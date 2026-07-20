@@ -22,15 +22,17 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-neutral-950 min-h-[92vh] flex flex-col">
       {/* Background decorative elements */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-primary-600/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/3" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-accent-500/8 rounded-full blur-[100px] translate-x-1/3 translate-y-1/4" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden bg-neutral-950">
+        <img 
+          src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop" 
+          alt="Gaming Background" 
+          className="w-full h-full object-cover opacity-40 mix-blend-luminosity"
         />
+        <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-neutral-950/50" />
+        
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-primary-600/15 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/3 mix-blend-screen" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-accent-500/10 rounded-full blur-[100px] translate-x-1/3 translate-y-1/4 mix-blend-screen" />
       </div>
 
       {/* Main content */}
