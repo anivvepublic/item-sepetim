@@ -19,7 +19,7 @@ export default {
           700: '#1d4ed8',
           800: '#1e40af',
           900: '#1e3a8a',
-          950: '#0c1e3e',
+          950: '#0f1e4a',
         },
         accent: {
           50: '#fffbeb',
@@ -44,34 +44,55 @@ export default {
           700: '#047857',
           800: '#065f46',
           900: '#064e3b',
+        },
+        neutral: {
+          750: '#2d2d2d',
+          850: '#1a1a1a',
         }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Poppins', 'system-ui', 'sans-serif'],
+        display: ['Poppins', 'Inter', 'system-ui', 'sans-serif'],
+      },
+      borderWidth: {
+        3: '3px',
       },
       boxShadow: {
-        'float': '0 10px 40px -10px rgba(0, 0, 0, 0.1)',
-        'float-lg': '0 20px 60px -15px rgba(0, 0, 0, 0.15)',
+        'float': '0 4px 20px -4px rgba(0, 0, 0, 0.08)',
+        'float-lg': '0 12px 40px -8px rgba(0, 0, 0, 0.12)',
+        'glow': '0 0 20px -4px rgba(37, 99, 235, 0.3)',
+        'glow-accent': '0 0 20px -4px rgba(245, 158, 11, 0.3)',
       },
       animation: {
         'float': 'float 3s ease-in-out infinite',
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-        'slide-up': 'slideUp 0.5s ease-out',
+        'fade-in': 'fadeIn 0.4s ease-out both',
+        'slide-up': 'slideUp 0.4s ease-out both',
+        'scale-in': 'scaleIn 0.3s ease-out both',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
+          '50%': { transform: 'translateY(-8px)' },
         },
         fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
+          from: { opacity: '0' },
+          to: { opacity: '1' },
         },
         slideUp: {
-          '0%': { transform: 'translateY(20px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
+          from: { transform: 'translateY(16px)', opacity: '0' },
+          to: { transform: 'translateY(0)', opacity: '1' },
         },
+        scaleIn: {
+          from: { transform: 'scale(0.95)', opacity: '0' },
+          to: { transform: 'scale(1)', opacity: '1' },
+        },
+      },
+      backdropBlur: {
+        xs: '2px',
+      },
+      transitionTimingFunction: {
+        'spring': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
       },
     },
   },

@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ShoppingCart, LogOut, ChevronDown, Bell, Moon, Sun, Search } from 'lucide-react';
+import { Menu, X, ShoppingCart, LogOut, ChevronDown, Bell, Moon, Sun, Search, Gamepad2 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
 import { useNotificationStore } from '@/lib/store/notificationStore';
 import { useThemeStore, applyTheme } from '@/lib/store/themeStore';
 import { useCartStore } from '@/lib/store/cartStore';
-import { GAME_CATEGORIES } from '@/lib/shared/constants';
 import Avatar from '@/components/ui/Avatar';
 import CartDrawer from '@/components/features/CartDrawer';
 
@@ -22,10 +21,6 @@ export default function Header() {
   const { theme, toggleTheme } = useThemeStore();
   const { getItemCount } = useCartStore();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // Ana sayfada mı?
-  const isHomePage = location.pathname === '/';
 
   useEffect(() => { applyTheme(theme); }, [theme]);
   useEffect(() => {
@@ -52,61 +47,44 @@ export default function Header() {
         <div className="container-custom">
           <div className="flex items-center justify-between h-20">
             {/* LOGO */}
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-accent-500 rounded-xl flex items-center justify-center shadow-float">
-                <ShoppingCart className="w-5 h-5 text-white" />
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <div className="w-9 h-9 bg-gradient-to-br from-primary-600 to-primary-400 rounded-xl flex items-center justify-center shadow-md shadow-primary-900/30">
+                <Gamepad2 className="w-4.5 h-4.5 text-white" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-bold bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">Item Sepetim</span>
-                <span className="text-xs text-neutral-500 dark:text-neutral-400 -mt-1">Premium Oyun Pazarı</span>
+              <div className="flex flex-col leading-none">
+                <span className="text-lg font-bold bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent">Item Sepetim</span>
+                <span className="text-[10px] text-neutral-500 dark:text-neutral-500 mt-0.5 font-medium">Oyun Pazarı</span>
               </div>
             </Link>
 
             {/* MASAÜSTÜ NAVİGASYON */}
-            <nav className="hidden lg:flex items-center gap-8">
-              <Link to="/listings" className="relative text-neutral-700 dark:text-neutral-300 hover:text-primary-600 font-medium transition-colors group">
-                Tüm İlanlar
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 transition-all group-hover:w-full"></span>
-              </Link>
-              <div className="relative group">
-                <button className="flex items-center gap-2 text-neutral-700 dark:text-neutral-300 hover:text-primary-600 font-medium transition-colors">
-                  Oyunlar
-                  <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
-                </button>
-                <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-neutral-900 rounded-xl shadow-float-lg border border-neutral-200 dark:border-neutral-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                  <div className="p-2">
-                    {GAME_CATEGORIES.slice(0, 6).map((game: string) => (
-                      <button 
-                        key={game} 
-                        onClick={() => { navigate(`/?game=${encodeURIComponent(game)}`); setIsMobileMenuOpen(false); }} 
-                        className="block w-full text-left px-4 py-2 text-neutral-700 dark:text-neutral-300 hover:bg-primary-50 dark:hover:bg-neutral-800 hover:text-primary-600 rounded-lg transition-colors"
-                      >
-                        {game}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <button onClick={() => navigate('/listings?category=Hesap')} className="text-neutral-700 dark:text-neutral-300 hover:text-primary-600 font-medium transition-colors">
-                Hesaplar
-              </button>
-              <button onClick={() => navigate('/listings?category=Item')} className="text-neutral-700 dark:text-neutral-300 hover:text-primary-600 font-medium transition-colors">
-                Itemler
-              </button>
+            <nav className="hidden lg:flex items-center gap-7">
+              {[
+                { label: 'Tüm İlanlar', href: '/listings' },
+                { label: 'Hesaplar', href: '/listings?category=Hesap' },
+                { label: 'Itemler', href: '/listings?category=Item' },
+              ].map(({ label, href }) => (
+                <Link
+                  key={label}
+                  to={href}
+                  className="relative text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors group py-1"
+                >
+                  {label}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 rounded-full transition-all duration-300 group-hover:w-full" />
+                </Link>
+              ))}
             </nav>
 
-            {/* MASAÜSTÜ SAĞ TARAF - ANA SAYFADA ARAMA İKONU YOK */}
-            <div className="hidden lg:flex items-center gap-3">
-              {/* ARAMA İKONU - SADECE ANA SAYFA DIŞINDA */}
-              {!isHomePage && (
-                <button 
-                  onClick={() => navigate('/search')}
-                  className="p-2.5 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors"
-                  title="Ara"
-                >
-                  <Search className="w-5 h-5" />
-                </button>
-              )}
+            {/* MASAÜSTÜ SAĞ TARAF */}
+            <div className="hidden lg:flex items-center gap-2">
+              {/* ARAMA İKONU - HER SAYFADA GÖRÜNÜR */}
+              <button 
+                onClick={() => navigate('/search')}
+                className="p-2.5 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors"
+                title="Ara"
+              >
+                <Search className="w-5 h-5" />
+              </button>
 
               {/* TEMA DEĞİŞTİRME */}
               <button 
@@ -262,36 +240,28 @@ export default function Header() {
               className="lg:hidden bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 overflow-hidden"
             >
               <div className="container-custom py-6 space-y-4">
-                <Link 
-                  to="/listings" 
-                  onClick={() => setIsMobileMenuOpen(false)} 
-                  className="block text-neutral-700 dark:text-neutral-300 hover:text-primary-600 font-medium transition-colors"
-                >
-                  Tüm İlanlar
-                </Link>
-                <button 
-                  onClick={() => { navigate('/listings?category=Hesap'); setIsMobileMenuOpen(false); }} 
-                  className="block w-full text-left text-neutral-700 dark:text-neutral-300 hover:text-primary-600 font-medium transition-colors"
-                >
-                  Hesaplar
-                </button>
-                <button 
-                  onClick={() => { navigate('/listings?category=Item'); setIsMobileMenuOpen(false); }} 
-                  className="block w-full text-left text-neutral-700 dark:text-neutral-300 hover:text-primary-600 font-medium transition-colors"
-                >
-                  Itemler
-                </button>
-                
-                {/* MOBİL ARAMA İKONU - SADECE ANA SAYFA DIŞINDA */}
-                {!isHomePage && (
-                  <button 
-                    onClick={() => { navigate('/search'); setIsMobileMenuOpen(false); }} 
-                    className="w-full flex items-center gap-3 px-4 py-3 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg transition-colors"
+                {[
+                  { label: 'Tüm İlanlar', href: '/listings' },
+                  { label: 'Hesaplar', href: '/listings?category=Hesap' },
+                  { label: 'Itemler', href: '/listings?category=Item' },
+                ].map(({ label, href }) => (
+                  <Link
+                    key={label}
+                    to={href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block text-neutral-700 dark:text-neutral-300 hover:text-primary-600 font-medium transition-colors"
                   >
-                    <Search className="w-5 h-5" />
-                    <span>Ara</span>
-                  </button>
-                )}
+                    {label}
+                  </Link>
+                ))}
+                {/* MOBİL ARAMA */}
+                <button 
+                  onClick={() => { navigate('/search'); setIsMobileMenuOpen(false); }} 
+                  className="w-full flex items-center gap-3 px-4 py-3 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-lg transition-colors"
+                >
+                  <Search className="w-5 h-5" />
+                  <span>Ara</span>
+                </button>
 
                 <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800 space-y-3">
                   {/* MOBİL SEPET BUTONU */}
