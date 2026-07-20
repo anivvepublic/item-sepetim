@@ -9,7 +9,7 @@ const HERO_IMAGES = [
   'https://steamcdn-a.akamaihd.net/steam/apps/1172470/library_600x900_2x.jpg',
 ];
 
-const GAME_LABELS = ['CS2', 'PUBG', 'GTA V', 'RDR2'];
+const GAME_LABELS = ['CS2', 'PUBG', 'GTA V', 'APEX LEGENDS'];
 
 const STATS = [
   { icon: Package, value: '150K+', label: 'Aktif İlan' },
