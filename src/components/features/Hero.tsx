@@ -41,15 +41,15 @@ export default function Hero() {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-center">
 
             {/* Left: Text content (2/5) */}
-            <div className="lg:col-span-2 flex flex-col items-start">
+            <div className="lg:col-span-2 flex flex-col items-center text-center lg:items-start lg:text-left pt-8 lg:pt-0">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary-500/15 border border-primary-500/30 rounded-full mb-6"
+                className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary-500/15 border border-primary-500/30 rounded-full mb-6 lg:mb-6"
               >
                 <span className="w-2 h-2 rounded-full bg-primary-400 animate-pulse" />
-                <span className="text-xs font-semibold text-primary-300 tracking-wider uppercase">
+                <span className="text-[10px] sm:text-xs font-semibold text-primary-300 tracking-wider uppercase">
                   Türkiye'nin #1 Oyun Pazarı
                 </span>
               </motion.div>
@@ -58,10 +58,10 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight mb-5"
+                className="text-3xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold text-white leading-[1.15] mb-4 sm:mb-5 max-w-lg lg:max-w-none mx-auto lg:mx-0"
               >
                 Oyun Hesapları
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-primary-300 to-accent-400">
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-primary-300 to-accent-400 py-1">
                   ve Itemler İçin
                 </span>
                 Tek Adres
@@ -71,7 +71,7 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-neutral-400 text-base sm:text-lg leading-relaxed mb-8 max-w-sm"
+                className="text-neutral-400 text-sm sm:text-lg leading-relaxed mb-8 max-w-sm sm:max-w-md mx-auto lg:mx-0 px-2 sm:px-0"
               >
                 Binlerce oyun hesabı ve item arasından en iyisini seç, güvenle satın al. Hızlı teslimat garantisi.
               </motion.p>
@@ -80,18 +80,18 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto mb-10"
+                className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto mb-10 px-4 sm:px-0"
               >
                 <button
                   onClick={() => navigate('/listings')}
-                  className="group flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-primary-900/40 hover:shadow-primary-900/60 hover:scale-[1.02]"
+                  className="group flex items-center justify-center gap-2 px-6 py-3.5 sm:py-3.5 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-primary-900/40 hover:shadow-primary-900/60 hover:scale-[1.02] text-sm sm:text-base w-full sm:w-auto"
                 >
                   Alışverişe Başla
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
                 <button
                   onClick={() => navigate('/create-listing')}
-                  className="flex items-center justify-center gap-2 px-6 py-3.5 bg-white/8 hover:bg-white/12 border border-white/15 hover:border-white/25 text-white font-semibold rounded-xl transition-all duration-300 backdrop-blur-sm"
+                  className="flex items-center justify-center gap-2 px-6 py-3.5 sm:py-3.5 bg-white/8 hover:bg-white/12 border border-white/15 hover:border-white/25 text-white font-semibold rounded-xl transition-all duration-300 backdrop-blur-sm text-sm sm:text-base w-full sm:w-auto"
                 >
                   İlan Ver
                 </button>
@@ -102,7 +102,7 @@ export default function Hero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="flex flex-wrap gap-2.5"
+                className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-2.5"
               >
                 {[
                   { icon: Shield, label: 'Güvenli Ödeme' },
@@ -111,9 +111,9 @@ export default function Hero() {
                 ].map(({ icon: Icon, label }) => (
                   <div
                     key={label}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-xs text-neutral-300 font-medium"
+                    className="flex items-center gap-1.5 px-3 py-1.5 sm:px-3 sm:py-1.5 bg-white/5 border border-white/10 rounded-full text-[10px] sm:text-xs text-neutral-300 font-medium"
                   >
-                    <Icon className="w-3.5 h-3.5 text-primary-400" />
+                    <Icon className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-primary-400" />
                     {label}
                   </div>
                 ))}
